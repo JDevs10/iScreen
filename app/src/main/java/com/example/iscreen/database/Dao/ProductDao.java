@@ -20,12 +20,21 @@ public interface ProductDao {
     @Query("SELECT * FROM produit")
     List<ProduitEntry> getProducts();
 
+    @Query("SELECT * FROM produit ORDER BY label")
+    List<ProduitEntry> getAllProducts();
+
+    @Query("SELECT * FROM produit WHERE id = :id")
+    ProduitEntry getProductById(long id);
+
     @Query("SELECT * FROM produit ORDER BY date_creation DESC")
     List<ProduitEntry> loadRecentProduct();
 
     @Query("SELECT * FROM produit WHERE id = :id")
-    List<ProduitEntry> loadProduitById(int id);
+    List<ProduitEntry> loadProductById(int id);
+
+    @Query("UPDATE produit SET file_content=:localPath WHERE id = :id")
+    void updateLocalImgPath(long id, String localPath);
 
     @Query("DELETE FROM produit")
-    void deleteAllProduit();
+    void deleteAllProducts();
 }

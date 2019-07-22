@@ -26,4 +26,7 @@ public interface ConfigurationDao {
 
     @Delete
     void deleteConfig(Configuration config);
+
+    @Query("DELETE FROM config")
+    void deleteAllConfig();
 }

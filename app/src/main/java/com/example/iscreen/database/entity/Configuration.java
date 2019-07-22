@@ -6,6 +6,10 @@ import android.arch.persistence.room.PrimaryKey;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 @Entity(tableName = "config")
 public class Configuration {
     @PrimaryKey //(autoGenerate = true)

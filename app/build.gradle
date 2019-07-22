@@ -31,4 +31,16 @@ dependencies {
     //    Room database library
     implementation "android.arch.persistence.room:runtime:1.1.1"
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
+
+    //    retrofit compile dependencies
+    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
+    implementation 'com.google.code.gson:gson:2.8.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.8.0'
+
+    // Gson library
+    implementation 'com.google.code.gson:gson:2.8.2'
+
+    // picasso image library
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 }

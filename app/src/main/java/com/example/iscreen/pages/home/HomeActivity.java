@@ -1,5 +1,6 @@
 package com.example.iscreen.pages.home;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -8,12 +9,19 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.iscreen.R;
+import com.example.iscreen.database.AppDatabase;
+import com.example.iscreen.pages.Loading;
 import com.example.iscreen.pages.home.fragments.Catalog;
+import com.example.iscreen.pages.home.fragments.Settings;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = HomeActivity.class.getSimpleName();
@@ -21,6 +29,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
     private DrawerLayout drawer;
     private NavigationView navigationView;
+    private static AppDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +41,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-
+        db = AppDatabase.getInstance(getApplicationContext());
 
         toolbar = findViewById(R.id.toolbar);
         //starting with Client_FragmentFindMerchant()
@@ -42,13 +51,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         navigationView = findViewById(R.id.home_nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        //Set Side Menu info
+        View header = navigationView.getHeaderView(0);
+        TextView nav_header_currentUserName_tv = (TextView)header.findViewById(R.id.nav_header_currentUserName);
+        nav_header_currentUserName_tv.setText(db.userDao().getUser().get(0).getLogin());
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        getSupportActionBar().hide();
         if (savedInstanceState == null){
+            //getSupportActionBar().hide();
             //default fragment when activity is running
+            getSupportActionBar().setTitle("Catalog");
             navigationView.setCheckedItem(R.id.nav_affichage);
             getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_container, new Catalog()).commit();
         }
@@ -62,7 +77,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 //init Side Menu user information
                 //initMenuHeaderInfo(navigationView);
 
-                toolbar.setTitle("");
+                toolbar.setTitle("Catalog");
                 navigationView.setCheckedItem(R.id.nav_affichage);
                 getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_container, new Catalog()).commit();
                 break;
@@ -71,9 +86,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 //init Side Menu user information
                 //initMenuHeaderInfo(navigationView);
 
-                toolbar.setTitle("Stores");
+                toolbar.setTitle("Paramètre");
                 navigationView.setCheckedItem(R.id.nav_settings);
-                //getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_container, new Client_FragmentFindMerchant()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_container, new Settings()).commit();
+                break;
+
+            case R.id.nav_disconnect:
+                //init Side Menu user information
+                //initMenuHeaderInfo(navigationView);
+
+                db.userDao().deleteAllUser();
+                db.tokenDao().deleteAllToken();
+                db.categorieDao().deleteAllCategorie();
+                db.productDao().deleteAllProducts();
+                db.configurationDao().deleteAllConfig();
+                startActivity(new Intent(HomeActivity.this, Loading.class));
                 break;
 
         }

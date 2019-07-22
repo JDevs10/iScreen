@@ -3,6 +3,10 @@ package com.example.iscreen.database.entity;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 @Entity(tableName = "produit")
 public class ProduitEntry {
     @PrimaryKey(autoGenerate = true)

@@ -5,21 +5,33 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
+import com.example.iscreen.database.Dao.CategorieDao;
 import com.example.iscreen.database.Dao.ConfigurationDao;
 import com.example.iscreen.database.Dao.ProductDao;
+import com.example.iscreen.database.Dao.ServerDao;
+import com.example.iscreen.database.Dao.TokenDao;
+import com.example.iscreen.database.Dao.UserDao;
+import com.example.iscreen.database.entity.CategorieEntry;
+import com.example.iscreen.database.entity.ServerEntry;
+import com.example.iscreen.database.entity.TokenEntry;
+import com.example.iscreen.database.entity.UserEntry;
+import com.example.iscreen.model.Carousel;
 import com.example.iscreen.database.entity.Configuration;
 import com.example.iscreen.database.entity.ProduitEntry;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
 
-@Database(entities = {Configuration.class, ProduitEntry.class},
-        version = 3,
+@Database(entities = {ServerEntry.class, TokenEntry.class, UserEntry.class, Configuration.class, ProduitEntry.class, CategorieEntry.class},
+        version = 8,
         exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private final String TAG = AppDatabase.class.getSimpleName();
 
     private static final String LOG_TAG = AppDatabase.class.getSimpleName();
     private static final Object LOCK = new Object();
-    private static final String DATABASE_NAME = "isales_store";
+    private static final String DATABASE_NAME = "iscreen_database";
     private static AppDatabase sInstance;
 
     public static AppDatabase getInstance(Context context) {
@@ -41,68 +53,12 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract ProductDao productDao();
 
+    public abstract CategorieDao categorieDao();
 
+    public abstract ServerDao serverDao();
 
+    public abstract TokenDao tokenDao();
 
-
-
-
-
-
-
-
-
-
-
-    /*
-    public static final String CONFIG_TABLE_NAME = "configuration";
-    public static final String CONFIG_TABLE_COL_1 = "id";
-    public static final String CONFIG_TABLE_COL_2 = "random";
-    public static final String CONFIG_TABLE_COL_3 = "lastProducts";
-    public static final String CONFIG_TABLE_COL_4 = "category";
-    public static final String CONFIG_TABLE_COL_5 = "promotion";
-    public static final String CONFIG_TABLE_COL_6 = "promotion";
-    public static final String CONFIG_TABLE_COL_7 = "promotion";
-    public static final String CONFIG_TABLE_COL_8 = "promotion";
-
-    private static final String CREATE_CONFIG_TABLE = "create table "+CONFIG_TABLE_NAME+" (" +
-            "ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            CONFIG_TABLE_COL_1+" TEXT, "+
-            CONFIG_TABLE_COL_2+" TEXT, "+
-            CONFIG_TABLE_COL_3+" TEXT, "+
-            CONFIG_TABLE_COL_4+" TEXT, "+
-            CONFIG_TABLE_COL_5+" TEXT) ";
-
-    private static final String DROPE_CONFIG = "DROP TABLE IF EXISTs "+CONFIG_TABLE_NAME;
-
-    public AppDatabase(Context context) {
-        super(context, "iscreen_db", null, 1);
-        Log.e("DB: ", "Database created");
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_CONFIG_TABLE);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
-        db.execSQL(DROPE_CONFIG);
-        onCreate(db);
-    }
-
-
-    public int insertConfig(Configuration config){
-
-    }
-
-    public ArrayList<Configuration> getCurrentConfig(){
-
-    }
-
-    public void deleteConfig(long id){
-
-    }
-    */
+    public abstract UserDao userDao();
 
 }
