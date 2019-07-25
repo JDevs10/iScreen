@@ -7,7 +7,7 @@ import com.example.iscreen.remote.model.InternauteSuccess;
  * Created by JL on 07/19/2019.
  */
 
-public class LoginREST extends ISalesREST {
+public class LoginREST extends IScreenREST {
     private InternauteSuccess internauteSuccess;
 
     public LoginREST() {

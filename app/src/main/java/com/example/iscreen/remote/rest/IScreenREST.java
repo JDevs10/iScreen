@@ -4,11 +4,11 @@ package com.example.iscreen.remote.rest;
  * Created by JL on 07/19/2019.
  */
 
-public class ISalesREST {
+public class IScreenREST {
     protected int errorCode;
     protected String errorBody;
 
-    public ISalesREST() {
+    public IScreenREST() {
     }
 
     public int getErrorCode() {

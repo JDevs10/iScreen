@@ -1,6 +1,7 @@
 package com.example.iscreen.remote;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.iscreen.database.AppDatabase;
 import com.example.iscreen.database.entity.TokenEntry;

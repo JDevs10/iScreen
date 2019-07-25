@@ -38,9 +38,8 @@ public final class IScreenUtility {
     private static String ENCODE_CAROUSEL = "&amp;carousel;";
 
     public static String CURRENCY = "€";
-    public static String ISALES_PATH_FOLDER = "iSales";
-    public static String ISALES_PRODUCTS_IMAGESPATH_FOLDER = "iSales/iSales Produits";
-    public static String ISALES_CUSTOMER_IMAGESPATH_FOLDER = "iSales/iSales Clients";
+    public static String ISALES_PATH_FOLDER = "iScreen";
+    public static String ISALES_PRODUCTS_IMAGESPATH_FOLDER = "iScreen/iScreen Produits";
 
     public static int calculateNoOfColumns(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
@@ -332,16 +331,6 @@ public final class IScreenUtility {
 
     public static final void deleteProduitsImgFolder() {
         File myDir = new File(Environment.getExternalStorageDirectory(), ISALES_PRODUCTS_IMAGESPATH_FOLDER);
-        if (myDir.isDirectory() && myDir.list() != null) {
-            String[] children = myDir.list();
-            for (int i = 0; i < children.length; i++) {
-                new File(myDir, children[i]).delete();
-            }
-        }
-    }
-
-    public static final void deleteClientsImgFolder() {
-        File myDir = new File(Environment.getExternalStorageDirectory(), ISALES_CUSTOMER_IMAGESPATH_FOLDER);
         if (myDir.isDirectory() && myDir.list() != null) {
             String[] children = myDir.list();
             for (int i = 0; i < children.length; i++) {

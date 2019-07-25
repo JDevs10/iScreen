@@ -34,6 +34,7 @@ import com.example.iscreen.database.entity.ServerEntry;
 import com.example.iscreen.database.entity.TokenEntry;
 import com.example.iscreen.database.entity.UserEntry;
 import com.example.iscreen.interfaces.FindCategorieListener;
+import com.example.iscreen.interfaces.FindConfigurationListener;
 import com.example.iscreen.interfaces.FindImagesProductsListener;
 import com.example.iscreen.interfaces.FindProductsListener;
 import com.example.iscreen.interfaces.OnInternauteLoginComplete;
@@ -45,9 +46,11 @@ import com.example.iscreen.remote.model.Internaute;
 import com.example.iscreen.remote.model.Product;
 import com.example.iscreen.remote.model.User;
 import com.example.iscreen.remote.rest.FindCategoriesREST;
+import com.example.iscreen.remote.rest.FindConfigurationREST;
 import com.example.iscreen.remote.rest.FindProductsREST;
 import com.example.iscreen.remote.rest.LoginREST;
 import com.example.iscreen.task.FindCategorieTask;
+import com.example.iscreen.task.FindConfigurationTask;
 import com.example.iscreen.task.FindImagesProductsTask;
 import com.example.iscreen.task.FindProductsTask;
 import com.example.iscreen.task.InternauteLoginTask;
@@ -65,7 +68,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Loading extends AppCompatActivity implements OnInternauteLoginComplete, FindProductsListener, FindCategorieListener, FindImagesProductsListener {
+public class Loading extends AppCompatActivity implements OnInternauteLoginComplete, FindProductsListener, FindCategorieListener, FindImagesProductsListener, FindConfigurationListener {
     private static final String TAG = Loading.class.getSimpleName();
 
     /** Duration of wait **/
@@ -94,9 +97,13 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
     private List<ServerEntry> serverEntries;
     private ServerEntry mServerChoose;
 
+    /** Get Server Configuration **/
+    private FindConfigurationTask findConfigurationTask = null;
+
     /** Get products and Categories **/
     //    task de recuperation des produits
     private FindProductsTask mFindProductsTask = null;
+
     //    task de recuperation des categories
     private FindCategorieTask mFindCategorieTask = null;
 
@@ -153,8 +160,6 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.show();
 
-        //Ajouter les serveurs dans la BD
-        initServerUrl();
         //setStaticProduct();
 
         /** new Thread to Retrieve/Load Configurations **/
@@ -249,7 +254,10 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
     
     private boolean getSaveToken(){
         boolean res = false;
-        if (db.tokenDao().getAllToken().size() == 1 && db.categorieDao().getAllCategories().size() != 0 && db.productDao().getProducts().size() != 0){
+        if (db.tokenDao().getAllToken().size() == 1 &&
+            db.configurationDao().getCurrentConfig().size() == 1 &&
+            db.categorieDao().getAllCategories().size() != 0 &&
+            db.productDao().getProducts().size() != 0){
             res = true;
         }
         return res;
@@ -266,17 +274,18 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
         return currentConfig.size();
     }
 
-    protected void getServerConf(){
+    protected void getServerConfigTEST(){
         // Testing
         // Test Config
         Configuration config = new Configuration();
         config.setId(1);
-        config.setRandom(true);
-        config.setRecentProducts(false);
-        config.setPromotion(false);
-        config.setCategory(-1);
-        config.setSplitScreen(true);
-        config.setGotConfig(false);
+        config.setRandomProduct(true);
+        config.setRandomCategory(false);
+        config.setRandomCategoryX("-1");
+        config.setRecentProducts(true);
+        config.setCarouselSize(30);
+        config.setCarouselSlide(true);
+        config.setCarouselSpeed(15);
         db.configurationDao().insertConfig(config);
     }
 
@@ -304,6 +313,9 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
     }
 
     private void InitServerInfo(Dialog mDialog) {
+        //Ajouter les serveurs dans la BD
+        initServerUrl();
+
         //Setup the Dialog views
         mServerIV = (ImageView) mDialog.findViewById(R.id.iv_login_server);
         mServerET = (EditText) mDialog.findViewById(R.id.et_login_server);
@@ -406,12 +418,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
         db.serverDao().updateActiveServer(mServerChoose.getId(), true);
     }
 
-    private void showProgressDialog(boolean show, boolean changeMsg, String title, String message) {
-
-        if (show && changeMsg && message != null){
-            progressDialog.setMessage(message);
-        }
-
+    private void showProgressDialog(boolean show, String title, String message) {
         if (show) {
             progressDialog = new ProgressDialog(Loading.this);
             if (title != null) progressDialog.setTitle(title);
@@ -429,13 +436,13 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
 
     private void executeLogin(String username, String password) {
         //masquage du formulaire de connexion
-        showProgressDialog(true, false, "Authentification", "Verification d'identitée");
+        showProgressDialog(true, "Authentification", "Verification d'identitée");
 
         if (!ConnectionManager.isPhoneConnected(Loading.this)) {
             Toast.makeText(Loading.this, "Erreur réseau. Veuillez vérifier votre connexion internet.", Toast.LENGTH_LONG).show();
 
             //masquage du formulaire de connexion
-            showProgressDialog(false, false, null, null);
+            showProgressDialog(false, null, null);
         }
         if (mAuthTask == null) {
             Internaute internaute = new Internaute(username, password);
@@ -454,7 +461,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
             Toast.makeText(Loading.this, "Service indisponible. Veuillez réssayer plutard.", Toast.LENGTH_LONG).show();
 
             //masquage du formulaire de connexion
-            showProgressDialog(false, false, null, null);
+            showProgressDialog(false, null, null);
             return;
         }
         if (loginREST.getInternauteSuccess() == null) {
@@ -462,13 +469,13 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
                 Toast.makeText(Loading.this, "Service indisponible. Veuillez réssayer plutard.", Toast.LENGTH_LONG).show();
 
                 //masquage du formulaire de connexion
-                showProgressDialog(false, false, null, null);
+                showProgressDialog(false, null, null);
                 return;
             } else {
                 Toast.makeText(Loading.this, "Erreur d'authentification. Paramètre de connexion incorrect.", Toast.LENGTH_LONG).show();
 
                 //masquage du formulaire de connexion
-                showProgressDialog(false, false, null, null);
+                showProgressDialog(false, null, null);
                 return;
             }
         }
@@ -520,7 +527,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
                     db.userDao().insertUser(userEntry);
 
                     //affichage du formulaire de connexion
-                    showProgressDialog(false, false, null, null);
+                    showProgressDialog(false, null, null);
 
                     //Log.e(TAG, "doInBackground: internauteSuccess="+loginREST.getInternauteSuccess().getSuccess().getToken());
                     //Intent intent = new Intent(Loading.this, HomeActivity.class);
@@ -531,19 +538,12 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
                     //finish();
                     //startActivity(intent);
 
-                    showProgressDialog(true, false, "Configuration", "Téléchargement des configuration depuis le server...");
-                    getServerConf();
-                    showProgressDialog(false, false, "Configuration", "Téléchargement des configuration depuis le server...");
-
-                    showProgressDialog(true, false, "Produit", "Téléchargement des catégories depuis le server...");
-                    db.categorieDao().deleteAllCategorie();
-                    db.productDao().deleteAllProducts();
-                    executeFindCategorieProducts();
+                    executeFindConfiguration();
 
                 } else {
 
                     //affichage du formulaire de connexion
-                    showProgressDialog(false, false, null, null);
+                    showProgressDialog(false, null, null);
                     try {
                         Log.e(TAG, "uploadDocument onResponse SignComm err: message=" + response.message() +
                                 " | code=" + response.code() + " | code=" + response.errorBody().string());
@@ -567,7 +567,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
             @Override
             public void onFailure(Call<ArrayList<User>> call, Throwable t) {
                 //affichage du formulaire de connexion
-                showProgressDialog(false, false, null, null);
+                showProgressDialog(false, null, null);
                 dialogEnterServerInfo(false);
                 Toast.makeText(Loading.this, "Erreu réseau. Veuillez vérifier votre connexion internet.", Toast.LENGTH_LONG).show();
                 return;
@@ -580,7 +580,72 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
      * Get Carousels configuration from server and save it locally
      **/
 
+    private void executeFindConfiguration(){
+        showProgressDialog(true, "Configuration", "Téléchargement des configuration depuis le server...");
 
+        //Si le téléphone n'est pas connecté
+        if (!ConnectionManager.isPhoneConnected(this)) {
+            Toast.makeText(this, getString(R.string.erreur_connexion), Toast.LENGTH_LONG).show();
+            showProgressDialog(false, null, null);
+            return;
+        }
+
+        if (findConfigurationTask == null) {
+            findConfigurationTask = new FindConfigurationTask(Loading.this, Loading.this, 1);
+            findConfigurationTask.execute();
+        }
+    }
+
+    @Override
+    public void onFindConfiguration(FindConfigurationREST findConfigurationREST) {
+        findConfigurationTask = null;
+
+        //Si la recupération echoue, on renvoi un message d'erreur
+        if (findConfigurationREST == null) {
+            //Fermeture du loader
+            showProgressDialog(false, null, null);
+            Toast.makeText(this, getString(R.string.service_indisponible), Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Configuration dbConfig = new Configuration();
+
+        /** ========== (0 = deactivate | 1 = activate) ========== **/
+        if (findConfigurationREST.getConfigs().getP_aleatoir().equals("0")){
+            dbConfig.setRandomProduct(false);
+        }else if (findConfigurationREST.getConfigs().getP_aleatoir().equals("1")){
+            dbConfig.setRandomProduct(true);
+        }
+
+
+        if (findConfigurationREST.getConfigs().getA_category().equals("0")){
+            dbConfig.setRandomCategory(false);
+        }else if (findConfigurationREST.getConfigs().getA_category().equals("1")){
+            dbConfig.setRandomCategory(true);
+        }
+
+        dbConfig.setRandomCategoryX(findConfigurationREST.getConfigs().getCategory_x());
+
+        if (findConfigurationREST.getConfigs().getP_recente().equals("0")){
+            dbConfig.setRecentProducts(false);
+        }else if (findConfigurationREST.getConfigs().getP_recente().equals("1")){
+            dbConfig.setRecentProducts(true);
+        }
+
+        // App default configurations
+        dbConfig.setCarouselSize(50);
+        dbConfig.setCarouselSlide(true);
+        dbConfig.setCarouselSpeed(15);
+
+        db.configurationDao().deleteAllConfig();
+        db.configurationDao().insertConfig(dbConfig);
+        showProgressDialog(false, "Configuration", "Téléchargement des configuration depuis le server...");
+
+        showProgressDialog(true, "Produit", "Téléchargement des catégories depuis le server...");
+        db.categorieDao().deleteAllCategorie();
+        db.productDao().deleteAllProducts();
+        executeFindCategorieProducts();
+    }
 
     /**
      * Get all products from the server and save them locally
@@ -589,7 +654,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
         //Si le téléphone n'est pas connecté
         if (!ConnectionManager.isPhoneConnected(this)) {
             Toast.makeText(this, getString(R.string.erreur_connexion), Toast.LENGTH_LONG).show();
-            showProgressDialog(false, false, null, null);
+            showProgressDialog(false, null, null);
             return;
         }
 
@@ -609,7 +674,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
         //        Si la recupération echoue, on renvoi un message d'erreur
         if (findCategoriesREST == null) {
             //        Fermeture du loader
-            showProgressDialog(false, false, null, null);
+            showProgressDialog(false, null, null);
             Toast.makeText(this, getString(R.string.service_indisponible), Toast.LENGTH_LONG).show();
             return;
         }
@@ -618,7 +683,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
             //reinitialisation du nombre de page
             mPageCategorie = 0;
 
-            showProgressDialog(false, false, null, null);
+            showProgressDialog(false, null, null);
             executeFindProducts();
             return;
         }
@@ -642,12 +707,12 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
     }
 
     private void executeFindProducts(){
-        showProgressDialog(true, false, "Produit", "Téléchargement des produits depuis le server...");
+        showProgressDialog(true, "Produit", "Téléchargement des produits depuis le server...");
 
         //Si le téléphone n'est pas connecté
         if (!ConnectionManager.isPhoneConnected(this)) {
             Toast.makeText(this, getString(R.string.erreur_connexion), Toast.LENGTH_LONG).show();
-            showProgressDialog(false, false, null, null);
+            showProgressDialog(false, null, null);
             return;
         }
 
@@ -706,7 +771,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
             if (mCurrentPdtQuery >= mTotalPdtQuery - 1) {
                 //Objects.requireNonNull(this).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                 //Fermeture du loader
-                showProgressDialog(false, false, null, null);
+                showProgressDialog(false, null, null);
 
                 //initContent();
                 Toast.makeText(this, getString(R.string.liste_produits_synchronises), Toast.LENGTH_LONG).show();
@@ -731,7 +796,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
             if (mCurrentPdtQuery >= mTotalPdtQuery - 1) {
                 //Objects.requireNonNull(this).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                 //        Fermeture du loader
-                showProgressDialog(false, false, null, null);
+                showProgressDialog(false, null, null);
 
                 Toast.makeText(this, getString(R.string.liste_produits_synchronises), Toast.LENGTH_LONG).show();
                 //loadProduits(-1, null, 0);
@@ -750,7 +815,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
 
     private void executeFindImageProduct(){
         //affichage du loader dialog
-        showProgressDialog(true, false, "Image", getString(R.string.miseajour_images_produits));
+        showProgressDialog(true, "Image", getString(R.string.miseajour_images_produits));
 
         //Suppression des images des clients en local
         IScreenUtility.deleteProduitsImgFolder();
@@ -766,7 +831,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
 
                 //Si le téléphone n'est pas connecté
                 if (!ConnectionManager.isPhoneConnected(this)) {
-                    showProgressDialog(false, false, null, null);
+                    showProgressDialog(false, null, null);
                     Toast.makeText(this, getString(R.string.erreur_connexion), Toast.LENGTH_LONG).show();
                     break;
                 }
@@ -776,7 +841,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
             }
             return;
         } else {
-            showProgressDialog(false, false, null, null);
+            showProgressDialog(false, null, null);
             Toast.makeText(this, "Aucun produits", Toast.LENGTH_LONG).show();
             return;
         }
@@ -794,7 +859,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
 //            Objects.requireNonNull(getActivity()).setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
             //initContent();
-            showProgressDialog(false, false, null, null);
+            showProgressDialog(false, null, null);
 
             //setAutoOrientationEnabled(getContext(), false);
             Toast.makeText(this, getString(R.string.miseajour_images_produits_effectuee), Toast.LENGTH_LONG).show();
@@ -803,5 +868,6 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
             return;
         }
     }
+
 }
 

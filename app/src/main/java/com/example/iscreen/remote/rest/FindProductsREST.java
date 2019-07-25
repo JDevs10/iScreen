@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Created by JL on 07/19/2019.
  */
 
-public class FindProductsREST extends ISalesREST {
+public class FindProductsREST extends IScreenREST {
     private ArrayList<Product> products;
     private long categorie_id;
 

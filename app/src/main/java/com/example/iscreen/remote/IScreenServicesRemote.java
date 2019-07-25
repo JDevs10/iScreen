@@ -1,12 +1,14 @@
 package com.example.iscreen.remote;
 
 import com.example.iscreen.remote.model.Categorie;
+import com.example.iscreen.remote.model.Config;
 import com.example.iscreen.remote.model.Internaute;
 import com.example.iscreen.remote.model.InternauteSuccess;
 import com.example.iscreen.remote.model.Product;
 import com.example.iscreen.remote.model.User;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import retrofit2.Call;
@@ -28,7 +30,24 @@ public interface IScreenServicesRemote {
     @POST("login")
     Call<InternauteSuccess> login(@Body Internaute internaute);
 
+    /** ============================= Server Configuration ===================================== **/
+    @POST("iscreenapi/createConfig/{p_aleatoir_iscreen}/{a_category_iscreen}/{category_x_iscreen}/{p_recente_iscreen}")
+    Call<Long> createConfiguration(Config config);
 
+    @GET("iscreenapi/getConfig/{id}")
+    Call<Config> getConfiguration(@Path("id") Long id);
+
+    @PUT("iscreenapi/updateConfig/{rowid}/{p_aleatoir_iscreen}/{a_category_iscreen}/{category_x_iscreen}/{p_recente_iscreen}")
+    Call<Long> updateConfiguration(@Path("rowid") String rowid,
+                                   @Path("p_aleatoir_iscreen") String p_aleatoir_iscreen,
+                                   @Path("a_category_iscreen") String a_category_iscreen,
+                                   @Path("category_x_iscreen") String category_x_iscreen,
+                                   @Path("p_recente_iscreen") String p_recente_iscreen);
+
+    @DELETE("iscreenapi/deleteConfig{rowid}")
+    Call<Long> deleteConfiguration(@Path("rowid") Long rowid);
+
+    /** ============================ End Server Configuration ================================== **/
 
     //  Recupération de la liste des produits
     @GET("products")

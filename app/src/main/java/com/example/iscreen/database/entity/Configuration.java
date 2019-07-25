@@ -18,33 +18,26 @@ public class Configuration {
     /**
      * For Carousel display setup
      */
-    private boolean random;
+    private boolean randomProduct;
+    private boolean randomCategory;
+    private String randomCategoryX;
     private boolean recentProducts;
-    private int category;
-    private boolean promotion;
-
-    /**
-     * Detail Display
-     * split screen = true ? false
-     */
-    private boolean splitScreen;
-
-    /**
-     *  First trigger to get server config
-     */
-    private boolean gotConfig;
+    private int carouselSize;
+    private boolean carouselSlide;
+    private int carouselSpeed;
 
     public Configuration() {
     }
 
-    public Configuration(int id, boolean random, boolean recentProducts, int category, boolean promotion, boolean splitScreen, boolean gotConfig) {
+    public Configuration(int id, boolean randomProduct, boolean randomCategory, String randomCategoryX, boolean recentProducts, int carouselSize, boolean carouselSlide, int carouselSpeed) {
         this.id = id;
-        this.random = random;
+        this.randomProduct = randomProduct;
+        this.randomCategory = randomCategory;
+        this.randomCategoryX = randomCategoryX;
         this.recentProducts = recentProducts;
-        this.category = category;
-        this.promotion = promotion;
-        this.splitScreen = splitScreen;
-        this.gotConfig = gotConfig;
+        this.carouselSize = carouselSize;
+        this.carouselSlide = carouselSlide;
+        this.carouselSpeed = carouselSpeed;
     }
 
     public int getId() {
@@ -55,12 +48,28 @@ public class Configuration {
         this.id = id;
     }
 
-    public boolean isRandom() {
-        return random;
+    public boolean isRandomProduct() {
+        return randomProduct;
     }
 
-    public void setRandom(boolean random) {
-        this.random = random;
+    public void setRandomProduct(boolean randomProduct) {
+        this.randomProduct = randomProduct;
+    }
+
+    public boolean isRandomCategory() {
+        return randomCategory;
+    }
+
+    public void setRandomCategory(boolean randomCategory) {
+        this.randomCategory = randomCategory;
+    }
+
+    public String getRandomCategoryX() {
+        return randomCategoryX;
+    }
+
+    public void setRandomCategoryX(String randomCategoryX) {
+        this.randomCategoryX = randomCategoryX;
     }
 
     public boolean isRecentProducts() {
@@ -71,35 +80,27 @@ public class Configuration {
         this.recentProducts = recentProducts;
     }
 
-    public int getCategory() {
-        return category;
+    public int getCarouselSize() {
+        return carouselSize;
     }
 
-    public void setCategory(int category) {
-        this.category = category;
+    public void setCarouselSize(int carouselSize) {
+        this.carouselSize = carouselSize;
     }
 
-    public boolean isPromotion() {
-        return promotion;
+    public boolean isCarouselSlide() {
+        return carouselSlide;
     }
 
-    public void setPromotion(boolean promotion) {
-        this.promotion = promotion;
+    public void setCarouselSlide(boolean carouselSlide) {
+        this.carouselSlide = carouselSlide;
     }
 
-    public boolean isSplitScreen() {
-        return splitScreen;
+    public int getCarouselSpeed() {
+        return carouselSpeed;
     }
 
-    public void setSplitScreen(boolean splitScreen) {
-        this.splitScreen = splitScreen;
-    }
-
-    public boolean isGotConfig() {
-        return gotConfig;
-    }
-
-    public void setGotConfig(boolean gotConfig) {
-        this.gotConfig = gotConfig;
+    public void setCarouselSpeed(int carouselSpeed) {
+        this.carouselSpeed = carouselSpeed;
     }
 }

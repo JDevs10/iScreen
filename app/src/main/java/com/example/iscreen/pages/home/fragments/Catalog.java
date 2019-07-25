@@ -33,6 +33,7 @@ public class Catalog extends Fragment implements LoadCarousels {
     private final String TAG = Catalog.class.getSimpleName();
     private Context mContext;
     private boolean setupCarouselData = true;
+    private boolean isCarouselSlide;
 
     private RecyclerView random_rv;
     private RecyclerView randomCat_rv;
@@ -44,7 +45,7 @@ public class Catalog extends Fragment implements LoadCarousels {
 
     final int durationRandom_rv = 10;
     final int durationRandomCat_rv = 15;
-    final int durationRecentProducts_rv = 13;
+    final int durationRecentProducts_rv = 10;
     final int pixelsToMove = 30;
 
     private final Handler mHandlerRandom_rv = new Handler(Looper.getMainLooper());
@@ -52,7 +53,7 @@ public class Catalog extends Fragment implements LoadCarousels {
         @Override
         public void run() {
             random_rv.smoothScrollBy(pixelsToMove, 0);
-            mHandlerRandom_rv.postDelayed(this, durationRandom_rv);
+            mHandlerRandom_rv.postDelayed(this, db.configurationDao().getCurrentConfig().get(0).getCarouselSpeed());
         }
     };
 
@@ -61,7 +62,7 @@ public class Catalog extends Fragment implements LoadCarousels {
         @Override
         public void run() {
             randomCat_rv.smoothScrollBy(pixelsToMove, 0);
-            mHandlerRandomCat_rv.postDelayed(this, durationRandomCat_rv);
+            mHandlerRandomCat_rv.postDelayed(this, db.configurationDao().getCurrentConfig().get(0).getCarouselSpeed());
         }
     };
 
@@ -70,7 +71,7 @@ public class Catalog extends Fragment implements LoadCarousels {
         @Override
         public void run() {
             recentProducts_rv.smoothScrollBy(pixelsToMove, 0);
-            mHandlerRecentProducts_rv.postDelayed(this, durationRecentProducts_rv);
+            mHandlerRecentProducts_rv.postDelayed(this, db.configurationDao().getCurrentConfig().get(0).getCarouselSpeed());
         }
     };
 
@@ -85,6 +86,9 @@ public class Catalog extends Fragment implements LoadCarousels {
         super.onCreate(savedInstanceState);
         this.db = AppDatabase.getInstance(mContext);
         progressDialog = new ProgressDialog(this.mContext);
+
+        isCarouselSlide = db.configurationDao().getCurrentConfig().get(0).isCarouselSlide();
+        Log.e(TAG, " isCarouselSlide => "+isCarouselSlide);
     }
 
     @Nullable
@@ -123,7 +127,7 @@ public class Catalog extends Fragment implements LoadCarousels {
 
     private void setupCarouselData(){
         showProgressDialog(setupCarouselData, "Produit", "Chargement des carousels...");
-        FindCarouselsList findCarouselsList = new FindCarouselsList(mContext, Catalog.this, 40);
+        FindCarouselsList findCarouselsList = new FindCarouselsList(mContext, Catalog.this, db.configurationDao().getCurrentConfig().get(0).getCarouselSize());
         findCarouselsList.execute();
     }
 
@@ -137,29 +141,29 @@ public class Catalog extends Fragment implements LoadCarousels {
         showProgressDialog(setupCarouselData, null, null);
     }
 
-    private void recycleViewAnimation(final RecyclerView recyclerView, final RecyclerView.Adapter adapter, final LinearLayoutManager llm, final int delay) {
-//        new LinearSnapHelper().attachToRecyclerView(recyclerView);
-
-//        for (int index = 0; index <= (adapter.getItemCount() - 1); index++) {
-//            if (index == (adapter.getItemCount() - 1)) {
-//                index = 0;
-//            }
-//
-//            recyclerView.smoothScrollToPosition(adapter.getItemCount()-1);
-//        }
-
-        int totalItemCount = adapter.getItemCount();
-        do {
-            if (totalItemCount <= 0) return;
-            int lastVisibleItemIndex = llm.findLastVisibleItemPosition();
-            if (lastVisibleItemIndex >= totalItemCount) {
-                lastVisibleItemIndex = 0;
-            }
-            llm.smoothScrollToPosition(recyclerView, null, lastVisibleItemIndex + 1);
-
-            Log.e(TAG, " recycleViewAnimation() "+delay);
-
-        } while (true);
+    private void recycleViewAnimation(List<ProduitEntry> productList, final RecyclerView theRecyclerView, final RecyclerView.Adapter adapter, final LinearLayoutManager llm, final Runnable runnable) {
+        if (productList.size() != 0) {
+            theRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(final RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    int lastItem = llm.findLastCompletelyVisibleItemPosition();
+                    if (lastItem == llm.getItemCount() - 1) {
+                        mHandlerRandom_rv.removeCallbacks(runnable);
+                        Handler postHandler = new Handler();
+                        postHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                recyclerView.setAdapter(null);
+                                recyclerView.setAdapter(adapter);
+                                mHandlerRandom_rv.postDelayed(runnable, 2000);
+                            }
+                        }, 2000);
+                    }
+                }
+            });
+            mHandlerRandom_rv.postDelayed(runnable, 2000);
+        }
     }
 
     private void getRandomProducts(List<ProduitEntry> randomProductList){
@@ -169,6 +173,10 @@ public class Catalog extends Fragment implements LoadCarousels {
         random_rv.setLayoutManager(mLinearLayoutManager);
         random_rv.setAdapter(randomProductAdapter);
 
+        if (isCarouselSlide) {
+            recycleViewAnimation(randomProductList, random_rv, randomProductAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_random_rv);
+        }
+        /*
         if (randomProductList.size() != 0) {
             //recycleViewAnimation(random_rv, randomProductAdapter, mLinearLayoutManager, 1000);
             random_rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -192,6 +200,7 @@ public class Catalog extends Fragment implements LoadCarousels {
             });
             mHandlerRandom_rv.postDelayed(SCROLLING_RUNNABLE_random_rv, 2000);
         }
+        */
     }
 
     private void getRandomFromEachCategory(List<ProduitEntry> randomFromSelectedCategoryList){
@@ -201,6 +210,10 @@ public class Catalog extends Fragment implements LoadCarousels {
         randomCat_rv.setLayoutManager(mLinearLayoutManager);
         randomCat_rv.setAdapter(randomProductAdapter);
 
+        if (isCarouselSlide) {
+            recycleViewAnimation(randomFromSelectedCategoryList, randomCat_rv, randomProductAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_randomCat_rv);
+        }
+        /*
         if (randomFromSelectedCategoryList.size() != 0) {
             randomCat_rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -223,6 +236,7 @@ public class Catalog extends Fragment implements LoadCarousels {
             });
             mHandlerRandomCat_rv.postDelayed(SCROLLING_RUNNABLE_randomCat_rv, 2000);
         }
+        */
     }
 
     private void getRecentProducts(List<ProduitEntry> recentProductList){
@@ -232,6 +246,10 @@ public class Catalog extends Fragment implements LoadCarousels {
         recentProducts_rv.setLayoutManager(mLinearLayoutManager);
         recentProducts_rv.setAdapter(recentProductAdapter);
 
+        if (isCarouselSlide) {
+            recycleViewAnimation(recentProductList, recentProducts_rv, recentProductAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_recentProducts_rv);
+        }
+        /*
         if (recentProductList.size() != 0) {
             recentProducts_rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -254,6 +272,7 @@ public class Catalog extends Fragment implements LoadCarousels {
             });
             mHandlerRecentProducts_rv.postDelayed(SCROLLING_RUNNABLE_recentProducts_rv, 2000);
         }
+        */
     }
 
 }
