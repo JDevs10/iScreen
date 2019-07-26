@@ -24,23 +24,45 @@ public class FindCarouselsList extends AsyncTask<Void, Void, Carousel> {
     private Context mContext;
 
     private int CAROUSEL_ITEM_SIZE;
+    private boolean randomProduct;
+    private boolean randomCategory;
+    private String randomCategoryX;
+    private boolean recentProducts;
+
     private LoadCarousels mLoadCarousels;
     private AppDatabase db;
 
-    public FindCarouselsList(Context context, LoadCarousels mLoadCarousels, int CAROUSEL_ITEM_SIZE){
+    public FindCarouselsList(Context context, LoadCarousels mLoadCarousels, int CAROUSEL_ITEM_SIZE,
+                             boolean randomProduct, boolean randomCategory, String randomCategoryX, boolean recentProducts){
         this.mContext = context;
         this.mLoadCarousels = mLoadCarousels;
         this.CAROUSEL_ITEM_SIZE = CAROUSEL_ITEM_SIZE;
+        this.randomProduct = randomProduct;
+        this.randomCategory = randomCategory;
+        this.randomCategoryX = randomCategoryX;
+        this.recentProducts = recentProducts;
         this.db = AppDatabase.getInstance(this.mContext);
     }
 
     @Override
     protected Carousel doInBackground(Void... voids) {
-        Carousel carousel = new Carousel();
-        carousel.setRandomProductList(saveRandomProducts());
-        carousel.setRandomFromSelectedCategoryList(saveRandomFromEachCategory());
-        carousel.setRecentProductList(saveRecentProducts());
+        Carousel carousel = null;
 
+        if (randomProduct || randomCategory || !randomCategoryX.equals("-1") || recentProducts){
+            carousel = new Carousel();
+        }
+        if (randomProduct){
+            carousel.setRandomProductList(saveRandomProducts());
+        }
+        if (randomCategory){
+            carousel.setRandomFromEachCategoryList(saveRandomFromEachCategory());
+        }
+        if (randomCategoryX.equals("-1")){
+            carousel.setRandomFromSelectedCategoryList(saveProductsFromCategory(randomCategoryX));
+        }
+        if (recentProducts){
+            carousel.setRecentProductList(saveRecentProducts());
+        }
         return carousel;
     }
 
@@ -117,6 +139,10 @@ public class FindCarouselsList extends AsyncTask<Void, Void, Carousel> {
             }
         }
         return randomFromSelectedCategoryList;
+    }
+
+    private List<ProduitEntry> saveProductsFromCategory(String categoryID){
+        return db.productDao().getProductsByCategory(Long.valueOf(categoryID));
     }
 
     private List<ProduitEntry> saveRecentProducts(){

@@ -87,7 +87,6 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
     private AutoCompleteTextView mUsernameET;
     private EditText mPasswordET, mServerET;
     private ImageView mServerIV;
-    private View mProgressView;
     private View mLoginFormView;
 
     private String mServer;
@@ -332,7 +331,6 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
             }
         });
 
-        mProgressView = mDialog.findViewById(R.id.login_progress);
         mLoginFormView = mDialog.findViewById(R.id.login_form);
 
         //Prevent the keyboard from displaying on activity start

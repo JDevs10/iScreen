@@ -32,6 +32,9 @@ public interface ProductDao {
     @Query("SELECT * FROM produit WHERE id = :id")
     List<ProduitEntry> loadProductById(int id);
 
+    @Query("SELECT * FROM produit WHERE categorie_id = :id")
+    List<ProduitEntry> getProductsByCategory(long id);
+
     @Query("UPDATE produit SET file_content=:localPath WHERE id = :id")
     void updateLocalImgPath(long id, String localPath);
 

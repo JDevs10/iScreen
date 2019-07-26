@@ -37,6 +37,7 @@ public class Catalog extends Fragment implements LoadCarousels {
 
     private RecyclerView random_rv;
     private RecyclerView randomCat_rv;
+    private RecyclerView randomCat_X_rv;
     private RecyclerView recentProducts_rv;
 
     private ProgressDialog progressDialog;
@@ -63,6 +64,15 @@ public class Catalog extends Fragment implements LoadCarousels {
         public void run() {
             randomCat_rv.smoothScrollBy(pixelsToMove, 0);
             mHandlerRandomCat_rv.postDelayed(this, db.configurationDao().getCurrentConfig().get(0).getCarouselSpeed());
+        }
+    };
+
+    private final Handler mHandlerRandomCat_X_rv = new Handler(Looper.getMainLooper());
+    private final Runnable SCROLLING_RUNNABLE_randomCat_X_rv = new Runnable() {
+        @Override
+        public void run() {
+            randomCat_X_rv.smoothScrollBy(pixelsToMove, 0);
+            mHandlerRandomCat_X_rv.postDelayed(this, db.configurationDao().getCurrentConfig().get(0).getCarouselSpeed());
         }
     };
 
@@ -96,9 +106,10 @@ public class Catalog extends Fragment implements LoadCarousels {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_catalog, container, false);
 
-        random_rv = view.findViewById(R.id.randomRecycler);
-        randomCat_rv = view.findViewById(R.id.randomCategoryRecycler);
-        recentProducts_rv = view.findViewById(R.id.lastProductRecycler);
+        random_rv = view.findViewById(R.id.fragment_catalog_randomRecycler);
+        randomCat_rv = view.findViewById(R.id.fragment_catalog_randomCategoryRecycler);
+        randomCat_X_rv = view.findViewById(R.id.fragment_catalog_categoryProducts);
+        recentProducts_rv = view.findViewById(R.id.fragment_catalog_lastProductRecycler);
 
         return view;
     }
@@ -127,14 +138,22 @@ public class Catalog extends Fragment implements LoadCarousels {
 
     private void setupCarouselData(){
         showProgressDialog(setupCarouselData, "Produit", "Chargement des carousels...");
-        FindCarouselsList findCarouselsList = new FindCarouselsList(mContext, Catalog.this, db.configurationDao().getCurrentConfig().get(0).getCarouselSize());
+        FindCarouselsList findCarouselsList = new FindCarouselsList(
+                mContext,
+                Catalog.this,
+                db.configurationDao().getCurrentConfig().get(0).getCarouselSize(),
+                db.configurationDao().getCurrentConfig().get(0).isRandomProduct(),
+                db.configurationDao().getCurrentConfig().get(0).isRandomCategory(),
+                db.configurationDao().getCurrentConfig().get(0).getRandomCategoryX(),
+                db.configurationDao().getCurrentConfig().get(0).isRecentProducts());
         findCarouselsList.execute();
     }
 
     @Override
     public void onLoadCarouselsData(Carousel carousel) {
         getRandomProducts(carousel.getRandomProductList());
-        getRandomFromEachCategory(carousel.getRandomFromSelectedCategoryList());
+        getRandomFromEachCategory(carousel.getRandomFromEachCategoryList());
+        getRandomFromCategoryX(carousel.getRandomFromSelectedCategoryList());
         getRecentProducts(carousel.getRecentProductList());
 
         setupCarouselData = false;
@@ -237,6 +256,17 @@ public class Catalog extends Fragment implements LoadCarousels {
             mHandlerRandomCat_rv.postDelayed(SCROLLING_RUNNABLE_randomCat_rv, 2000);
         }
         */
+    }
+
+    private void getRandomFromCategoryX(List<ProduitEntry> randomFromCategoryXList){
+        final RandomProductAdapter randomProductAdapter = new RandomProductAdapter(this.mContext, randomFromCategoryXList);
+        final LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        randomCat_X_rv.setLayoutManager(mLinearLayoutManager);
+        randomCat_X_rv.setAdapter(randomProductAdapter);
+
+        if (isCarouselSlide) {
+            recycleViewAnimation(randomFromCategoryXList, randomCat_X_rv, randomProductAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_randomCat_X_rv);
+        }
     }
 
     private void getRecentProducts(List<ProduitEntry> recentProductList){

@@ -6,14 +6,16 @@ import java.util.List;
 
 public class Carousel {
     private List<ProduitEntry> randomProductList;
+    private List<ProduitEntry> randomFromEachCategoryList;
     private List<ProduitEntry> randomFromSelectedCategoryList;
     private List<ProduitEntry> recentProductList;
 
     public Carousel() {
     }
 
-    public Carousel(List<ProduitEntry> randomProductList, List<ProduitEntry> randomFromSelectedCategoryList, List<ProduitEntry> recentProductList){
+    public Carousel(List<ProduitEntry> randomProductList, List<ProduitEntry> randomFromEachCategoryList, List<ProduitEntry> randomFromSelectedCategoryList, List<ProduitEntry> recentProductList){
         this.randomProductList = randomProductList;
+        this.randomFromEachCategoryList = randomFromEachCategoryList;
         this.randomFromSelectedCategoryList = randomFromSelectedCategoryList;
         this.recentProductList = recentProductList;
     }
@@ -24,6 +26,14 @@ public class Carousel {
 
     public void setRandomProductList(List<ProduitEntry> randomProductList) {
         this.randomProductList = randomProductList;
+    }
+
+    public List<ProduitEntry> getRandomFromEachCategoryList() {
+        return randomFromEachCategoryList;
+    }
+
+    public void setRandomFromEachCategoryList(List<ProduitEntry> randomFromEachCategoryList) {
+        this.randomFromEachCategoryList = randomFromEachCategoryList;
     }
 
     public List<ProduitEntry> getRandomFromSelectedCategoryList() {
