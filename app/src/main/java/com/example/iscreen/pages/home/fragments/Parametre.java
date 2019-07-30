@@ -2,7 +2,6 @@ package com.example.iscreen.pages.home.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,7 +17,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.iscreen.R;
@@ -36,8 +34,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Settings extends Fragment {
-    private final String TAG = Catalog.class.getSimpleName();
+public class Parametre extends Fragment {
+    private final String TAG = Affichage.class.getSimpleName();
     private Context mContext;
     private Configuration currentConfig, saveConfig;
     private AppDatabase db;
@@ -226,7 +224,7 @@ public class Settings extends Fragment {
                 "Random Cat X => "+config.getRandomCategoryX()+"\n" +
                 "Recent Product => "+config.isRecentProducts()+"\n" +
                 "Nombrer of Product => "+config.getCarouselSize()+"\n" +
-                "Carousel Slide => "+config.isCarouselSlide()+"\n" +
+                "Carrousel Slide => "+config.isCarouselSlide()+"\n" +
                 "Speed Slide => "+config.getCarouselSpeed()+"\n";
         Log.e(TAG, log);
     }

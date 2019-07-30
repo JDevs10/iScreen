@@ -4,16 +4,17 @@ import com.example.iscreen.database.entity.ProduitEntry;
 
 import java.util.List;
 
-public class Carousel {
+public class Carrousel {
     private List<ProduitEntry> randomProductList;
     private List<ProduitEntry> randomFromEachCategoryList;
+    private String SelectedCategoryName;
     private List<ProduitEntry> randomFromSelectedCategoryList;
     private List<ProduitEntry> recentProductList;
 
-    public Carousel() {
+    public Carrousel() {
     }
 
-    public Carousel(List<ProduitEntry> randomProductList, List<ProduitEntry> randomFromEachCategoryList, List<ProduitEntry> randomFromSelectedCategoryList, List<ProduitEntry> recentProductList){
+    public Carrousel(List<ProduitEntry> randomProductList, List<ProduitEntry> randomFromEachCategoryList, List<ProduitEntry> randomFromSelectedCategoryList, List<ProduitEntry> recentProductList){
         this.randomProductList = randomProductList;
         this.randomFromEachCategoryList = randomFromEachCategoryList;
         this.randomFromSelectedCategoryList = randomFromSelectedCategoryList;
@@ -34,6 +35,14 @@ public class Carousel {
 
     public void setRandomFromEachCategoryList(List<ProduitEntry> randomFromEachCategoryList) {
         this.randomFromEachCategoryList = randomFromEachCategoryList;
+    }
+
+    public String getSelectedCategoryName() {
+        return SelectedCategoryName;
+    }
+
+    public void setSelectedCategoryName(String selectedCategoryName) {
+        SelectedCategoryName = selectedCategoryName;
     }
 
     public List<ProduitEntry> getRandomFromSelectedCategoryList() {

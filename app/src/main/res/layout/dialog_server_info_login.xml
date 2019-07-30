@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="400dp"
+    android:layout_gravity="center"
+    android:gravity="center"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -34,6 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_gravity="center"
+            android:gravity="center"
             android:orientation="vertical">
 
             <LinearLayout
@@ -194,13 +197,6 @@
 
                 </android.support.design.widget.TextInputLayout>
             </LinearLayout>
-            <CheckBox
-                android:id="@+id/check_remember_login"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Se souvenir de moi"
-                android:checked="true"
-                android:buttonTint="@color/colorPrimary"/>
 
             <Button
                 android:id="@+id/email_sign_in_button"
