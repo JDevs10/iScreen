@@ -17,9 +17,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.iscreen.R;
-import com.example.iscreen.adapter.RandomProductAdapter;
-import com.example.iscreen.adapter.RecentProductAdapter;
+import com.example.iscreen.adapter.ProductAdapter;
 import com.example.iscreen.database.AppDatabase;
+import com.example.iscreen.database.entity.Configuration;
 import com.example.iscreen.model.Carrousel;
 import com.example.iscreen.database.entity.ProduitEntry;
 import com.example.iscreen.interfaces.LoadCarousels;
@@ -32,6 +32,7 @@ public class Affichage extends Fragment implements LoadCarousels {
     private Context mContext;
     private boolean setupCarouselData = true;
     private boolean isCarouselSlide;
+    private int mainLayoutWidth, mainLayoutHeight;
 
     private RecyclerView random_rv;
     private RecyclerView randomCat_rv;
@@ -99,6 +100,8 @@ public class Affichage extends Fragment implements LoadCarousels {
 
         isCarouselSlide = db.configurationDao().getCurrentConfig().get(0).isCarouselSlide();
         Log.e(TAG, " isCarouselSlide => "+isCarouselSlide);
+
+        setResponsible(db.configurationDao().getCurrentConfig().get(0));
     }
 
     @Nullable
@@ -123,6 +126,47 @@ public class Affichage extends Fragment implements LoadCarousels {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setupCarrouselData();
+    }
+
+    private void setResponsible(Configuration config){
+        int w = 0;
+        int x = 0;
+        int y = 0;
+        int z = 0;
+
+        if (config.isRandomProduct()){  w = 1;}
+        if (config.isRandomCategory()){  x = 1;}
+        if (!config.getRandomCategoryX().equals("-1")){  y = 1;}
+        if (config.isRecentProducts()){  z = 1;}
+
+        int res = w + x + y + z;
+        switch (res){
+            case 0:
+                mainLayoutWidth = 0;
+                mainLayoutHeight = 0;
+                Log.e(TAG, "setResponsible() ==> 0 ; 0");
+                break;
+            case 1:
+                mainLayoutWidth = 1000;
+                mainLayoutHeight = 1500;
+                Log.e(TAG, "setResponsible() ==> 1000 ; 1500");
+                break;
+            case 2:
+                mainLayoutWidth = 650;
+                mainLayoutHeight = 650;
+                Log.e(TAG, "setResponsible() ==> 650 ; 650");
+                break;
+            case 3:
+                mainLayoutWidth = 400;
+                mainLayoutHeight = 400;
+                Log.e(TAG, "setResponsible() ==> 400 ; 400");
+                break;
+            case 4:
+                mainLayoutWidth = 350;
+                mainLayoutHeight = 350;
+                Log.e(TAG, "setResponsible() ==> 350 ; 350");
+                break;
+        }
     }
 
     private void showProgressDialog(boolean show, String title, String message) {
@@ -195,13 +239,13 @@ public class Affichage extends Fragment implements LoadCarousels {
             if (randomProductList != null || randomProductList.size() != 0) {
                 randomTitle.setText("Produits aléatoires");
 
-                final RandomProductAdapter randomProductAdapter = new RandomProductAdapter(this.mContext, randomProductList);
+                final ProductAdapter productAdapter = new ProductAdapter(this.mContext, randomProductList, mainLayoutWidth,mainLayoutHeight);
                 final LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
                 random_rv.setLayoutManager(mLinearLayoutManager);
-                random_rv.setAdapter(randomProductAdapter);
+                random_rv.setAdapter(productAdapter);
 
                 if (isCarouselSlide) {
-                    recycleViewAnimation(randomProductList, random_rv, randomProductAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_random_rv);
+                    recycleViewAnimation(randomProductList, random_rv, productAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_random_rv);
                 }
             }
         }else{
@@ -215,13 +259,13 @@ public class Affichage extends Fragment implements LoadCarousels {
             if (randomFromSelectedCategoryList != null || randomFromSelectedCategoryList.size() != 0) {
                 randomCatTitle.setText("Produit de chaque categorie");
 
-                final RandomProductAdapter randomProductAdapter = new RandomProductAdapter(this.mContext, randomFromSelectedCategoryList);
+                final ProductAdapter productAdapter = new ProductAdapter(this.mContext, randomFromSelectedCategoryList, mainLayoutWidth, mainLayoutHeight);
                 final LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
                 randomCat_rv.setLayoutManager(mLinearLayoutManager);
-                randomCat_rv.setAdapter(randomProductAdapter);
+                randomCat_rv.setAdapter(productAdapter);
 
                 if (isCarouselSlide) {
-                    recycleViewAnimation(randomFromSelectedCategoryList, randomCat_rv, randomProductAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_randomCat_rv);
+                    recycleViewAnimation(randomFromSelectedCategoryList, randomCat_rv, productAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_randomCat_rv);
                 }
             }
         }else{
@@ -235,13 +279,13 @@ public class Affichage extends Fragment implements LoadCarousels {
             if (randomFromCategoryXList != null || randomFromCategoryXList.size() != 0) {
                 randomCat_XTitle.setText("Produit de la categorie : " + categoryName);
 
-                final RandomProductAdapter randomProductAdapter = new RandomProductAdapter(this.mContext, randomFromCategoryXList);
+                final ProductAdapter productAdapter = new ProductAdapter(this.mContext, randomFromCategoryXList, mainLayoutWidth, mainLayoutHeight);
                 final LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
                 randomCat_X_rv.setLayoutManager(mLinearLayoutManager);
-                randomCat_X_rv.setAdapter(randomProductAdapter);
+                randomCat_X_rv.setAdapter(productAdapter);
 
                 if (isCarouselSlide) {
-                    recycleViewAnimation(randomFromCategoryXList, randomCat_X_rv, randomProductAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_randomCat_X_rv);
+                    recycleViewAnimation(randomFromCategoryXList, randomCat_X_rv, productAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_randomCat_X_rv);
                 }
             }
         }else{
@@ -255,7 +299,7 @@ public class Affichage extends Fragment implements LoadCarousels {
             if (recentProductList != null || recentProductList.size() != 0) {
                 recentProductsTitle.setText("Produit récente");
 
-                final RecentProductAdapter recentProductAdapter = new RecentProductAdapter(this.mContext, recentProductList);
+                final ProductAdapter recentProductAdapter = new ProductAdapter(this.mContext, recentProductList, mainLayoutWidth, mainLayoutHeight);
                 final LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
                 recentProducts_rv.setLayoutManager(mLinearLayoutManager);
                 recentProducts_rv.setAdapter(recentProductAdapter);
