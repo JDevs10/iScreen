@@ -4,6 +4,10 @@ import com.example.iscreen.database.entity.ProduitEntry;
 
 import java.util.List;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 public class Carrousel {
     private List<ProduitEntry> randomProductList;
     private List<ProduitEntry> randomFromEachCategoryList;

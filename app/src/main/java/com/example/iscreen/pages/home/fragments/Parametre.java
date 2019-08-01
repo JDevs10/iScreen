@@ -34,6 +34,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 public class Parametre extends Fragment {
     private final String TAG = Affichage.class.getSimpleName();
     private Context mContext;

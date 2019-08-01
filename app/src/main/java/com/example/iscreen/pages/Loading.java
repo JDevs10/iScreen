@@ -68,6 +68,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 public class Loading extends AppCompatActivity implements OnInternauteLoginComplete, FindProductsListener, FindCategorieListener, FindImagesProductsListener, FindConfigurationListener {
     private static final String TAG = Loading.class.getSimpleName();
 

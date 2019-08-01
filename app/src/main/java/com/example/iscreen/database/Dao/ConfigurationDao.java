@@ -12,6 +12,10 @@ import com.example.iscreen.database.entity.Configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 @Dao
 public interface ConfigurationDao {
 

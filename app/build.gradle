@@ -1,5 +1,9 @@
 apply plugin: 'com.android.application'
 
+/**
+ * Created by JL on 07/19/2019.
+ * android
+ */
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -17,6 +21,11 @@ android {
         }
     }
 }
+
+/**
+ * Created by JL on 07/19/2019.
+ * dependencies
+ */
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

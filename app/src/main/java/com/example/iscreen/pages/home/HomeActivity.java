@@ -20,6 +20,10 @@ import com.example.iscreen.pages.Loading;
 import com.example.iscreen.pages.home.fragments.Affichage;
 import com.example.iscreen.pages.home.fragments.Parametre;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = HomeActivity.class.getSimpleName();
 

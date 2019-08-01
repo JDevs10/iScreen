@@ -19,6 +19,10 @@ import com.example.iscreen.database.entity.ProduitEntry;
 import java.io.File;
 import java.util.List;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAdapterViewHolder> {
     private final String TAG = ProductAdapter.class.getSimpleName();
     private Context mContext;

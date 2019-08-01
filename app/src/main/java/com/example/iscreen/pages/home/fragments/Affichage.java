@@ -27,6 +27,10 @@ import com.example.iscreen.task.FindCarouselsList;
 
 import java.util.List;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 public class Affichage extends Fragment implements LoadCarousels {
     private final String TAG = Affichage.class.getSimpleName();
     private Context mContext;

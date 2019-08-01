@@ -16,6 +16,10 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 public class FindImagesProductsTask extends AsyncTask<Void, Void, String> {
     private static final String TAG = FindImagesProductsTask.class.getSimpleName();
 
