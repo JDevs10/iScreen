@@ -18,7 +18,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".pages.home.fragments.Catalog"></activity>
+        <activity android:name=".pages.home.fragments.Affichage"></activity>
         <activity android:name=".pages.home.HomeActivity" />
         <activity android:name=".pages.Loading"
             android:theme="@style/AppTheme.NoActionBar">

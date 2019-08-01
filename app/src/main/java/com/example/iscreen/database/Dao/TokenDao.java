@@ -12,7 +12,7 @@ import com.example.iscreen.database.entity.TokenEntry;
 import java.util.List;
 
 /**
- * Created by netserve on 07/10/2018.
+ * Created by JL on 07/19/2019.
  */
 
 @Dao

@@ -12,6 +12,10 @@ import com.example.iscreen.database.entity.ProduitEntry;
 
 import java.util.List;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 @Dao
 public interface ProductDao {
     @Insert //(onConflict = OnConflictStrategy.REPLACE)

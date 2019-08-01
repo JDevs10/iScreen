@@ -15,6 +15,10 @@ import java.io.IOException;
 import retrofit2.Call;
 import retrofit2.Response;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 public class FindConfigurationTask extends AsyncTask<Void, Void, FindConfigurationREST> {
     private static final String TAG = FindConfigurationTask.class.getSimpleName();
 

@@ -16,7 +16,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 /**
- * Created by netserve on 05/09/2018.
+ * Created by JL on 07/19/2019.
  */
 
 public class FindCategorieTask extends AsyncTask<Void, Void, FindCategoriesREST> {

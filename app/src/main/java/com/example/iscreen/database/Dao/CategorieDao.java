@@ -30,6 +30,9 @@ public interface CategorieDao {
     @Query("SELECT * FROM categorie ORDER BY label")
     List<CategorieEntry> getCategories();
 
+    @Query("SELECT label FROM categorie WHERE id = :id")
+    List<String> getCategoryName(long id);
+
     @Query("DELETE FROM categorie")
     void deleteAllCategorie();
 

@@ -16,7 +16,7 @@ public class Configuration {
     private int id;
 
     /**
-     * For Carousel display setup
+     * For Carrousel display setup
      */
     private boolean randomProduct;
     private boolean randomCategory;

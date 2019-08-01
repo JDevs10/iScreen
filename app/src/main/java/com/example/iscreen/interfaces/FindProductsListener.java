@@ -9,5 +9,4 @@ import com.example.iscreen.remote.rest.FindProductsREST;
 
 public interface FindProductsListener {
     void onFindProductsCompleted(FindProductsREST findProductsREST);
-    void onFindAllProductsCompleted();
 }

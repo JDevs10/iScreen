@@ -4,6 +4,10 @@ import com.example.iscreen.remote.model.Config;
 
 import java.util.ArrayList;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 public class FindConfigurationREST extends IScreenREST {
     private Config configs;
     private long config_id;

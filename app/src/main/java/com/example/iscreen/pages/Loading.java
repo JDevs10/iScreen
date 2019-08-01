@@ -68,13 +68,14 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 public class Loading extends AppCompatActivity implements OnInternauteLoginComplete, FindProductsListener, FindCategorieListener, FindImagesProductsListener, FindConfigurationListener {
     private static final String TAG = Loading.class.getSimpleName();
 
-    /** Duration of wait **/
-    private final int SPLASH_DISPLAY_LENGTH = 4000;
     private ProgressDialog progressDialog;
-
     private AlertDialog.Builder builder;
     private AlertDialog dialog;
     private Dialog mDialog;
@@ -170,7 +171,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
             }
         };
 
-        if (getSaveToken()) {
+        if (getSaveTokenData()) {
 
             /** New Handler to start the Menu-Activity
              * and close this Splash-Screen after some seconds. **/
@@ -204,6 +205,17 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
             /** Show a dialog to enter the server info **/
             dialogEnterServerInfo(true);
         }
+    }
+
+    private boolean getSaveTokenData(){
+        boolean res = false;
+        if (db.tokenDao().getAllToken().size() == 1 &&
+                db.configurationDao().getCurrentConfig().size() == 1 &&
+                db.categorieDao().getAllCategories().size() != 0 &&
+                db.productDao().getProducts().size() != 0){
+            res = true;
+        }
+        return res;
     }
 
     private void dialogEnterServerInfo(boolean status){
@@ -246,34 +258,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
         Log.e(TAG, " product list size: "+db.productDao().getProducts().size());
     }
 
-    private String decimalPrice(String price_str){
-        double price_db = Double.valueOf(price_str);
-        return new DecimalFormat("##.##").format(price_db);
-    }
-    
-    private boolean getSaveToken(){
-        boolean res = false;
-        if (db.tokenDao().getAllToken().size() == 1 &&
-            db.configurationDao().getCurrentConfig().size() == 1 &&
-            db.categorieDao().getAllCategories().size() != 0 &&
-            db.productDao().getProducts().size() != 0){
-            res = true;
-        }
-        return res;
-    }
-
-    public int getLocalConf(){
-        //get local config
-        List<Configuration> currentConfig = db.configurationDao().getCurrentConfig();
-//        String log = "DB size: "+currentConfig.size()+"\n" +
-//                "ID: " +currentConfig.get(0).getId()+" \n"+
-//                "Carousel random: " +currentConfig.get(0).isRandom()+" \n"+
-//                "isGotConfig: "+currentConfig.get(0).getId();
-//        Log.e(TAG, " "+log);
-        return currentConfig.size();
-    }
-
-    protected void getServerConfigTEST(){
+    private void getServerConfigTEST(){
         // Testing
         // Test Config
         Configuration config = new Configuration();
@@ -286,6 +271,22 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
         config.setCarouselSlide(true);
         config.setCarouselSpeed(15);
         db.configurationDao().insertConfig(config);
+    }
+
+    private String decimalPrice(String price_str){
+        double price_db = Double.valueOf(price_str);
+        return new DecimalFormat("##.##").format(price_db);
+    }
+
+    private int getLocalConf(){
+        //get local config
+        List<Configuration> currentConfig = db.configurationDao().getCurrentConfig();
+//        String log = "DB size: "+currentConfig.size()+"\n" +
+//                "ID: " +currentConfig.get(0).getId()+" \n"+
+//                "Carrousel random: " +currentConfig.get(0).isRandom()+" \n"+
+//                "isGotConfig: "+currentConfig.get(0).getId();
+//        Log.e(TAG, " "+log);
+        return currentConfig.size();
     }
 
 
@@ -806,11 +807,6 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
 
     }
 
-    @Override
-    public void onFindAllProductsCompleted() {
-
-    }
-
     private void executeFindImageProduct(){
         //affichage du loader dialog
         showProgressDialog(true, "Image", getString(R.string.miseajour_images_produits));
@@ -862,6 +858,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
             //setAutoOrientationEnabled(getContext(), false);
             Toast.makeText(this, getString(R.string.miseajour_images_produits_effectuee), Toast.LENGTH_LONG).show();
 
+            dialogEnterServerInfo(false);
             startActivity(new Intent(Loading.this, HomeActivity.class));
             return;
         }

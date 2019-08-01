@@ -15,7 +15,6 @@ import com.example.iscreen.database.entity.CategorieEntry;
 import com.example.iscreen.database.entity.ServerEntry;
 import com.example.iscreen.database.entity.TokenEntry;
 import com.example.iscreen.database.entity.UserEntry;
-import com.example.iscreen.model.Carousel;
 import com.example.iscreen.database.entity.Configuration;
 import com.example.iscreen.database.entity.ProduitEntry;
 

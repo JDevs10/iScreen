@@ -1,5 +1,9 @@
 package com.example.iscreen.remote.model;
 
+/**
+ * Created by JL on 07/19/2019.
+ */
+
 public class Config {
     private String rowid;
     private String p_aleatoir;

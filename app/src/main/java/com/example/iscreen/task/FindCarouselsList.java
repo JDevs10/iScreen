@@ -2,13 +2,11 @@ package com.example.iscreen.task;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.example.iscreen.database.AppDatabase;
-import com.example.iscreen.model.Carousel;
+import com.example.iscreen.model.Carrousel;
 import com.example.iscreen.database.entity.ProduitEntry;
 import com.example.iscreen.interfaces.LoadCarousels;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +17,7 @@ import java.util.Random;
  * Created by JL on 07/19/2019.
  */
 
-public class FindCarouselsList extends AsyncTask<Void, Void, Carousel> {
+public class FindCarouselsList extends AsyncTask<Void, Void, Carrousel> {
     private final String TAG = FindCarouselsList.class.getSimpleName();
     private Context mContext;
 
@@ -45,31 +43,32 @@ public class FindCarouselsList extends AsyncTask<Void, Void, Carousel> {
     }
 
     @Override
-    protected Carousel doInBackground(Void... voids) {
-        Carousel carousel = null;
+    protected Carrousel doInBackground(Void... voids) {
+        Carrousel carrousel = null;
 
         if (randomProduct || randomCategory || !randomCategoryX.equals("-1") || recentProducts){
-            carousel = new Carousel();
+            carrousel = new Carrousel();
         }
         if (randomProduct){
-            carousel.setRandomProductList(saveRandomProducts());
+            carrousel.setRandomProductList(saveRandomProducts());
         }
         if (randomCategory){
-            carousel.setRandomFromEachCategoryList(saveRandomFromEachCategory());
+            carrousel.setRandomFromEachCategoryList(saveRandomFromEachCategory());
         }
-        if (randomCategoryX.equals("-1")){
-            carousel.setRandomFromSelectedCategoryList(saveProductsFromCategory(randomCategoryX));
+        if (!randomCategoryX.equals("-1")){
+            carrousel.setSelectedCategoryName(getCategoryName(randomCategoryX));
+            carrousel.setRandomFromSelectedCategoryList(saveProductsFromCategory(randomCategoryX));
         }
         if (recentProducts){
-            carousel.setRecentProductList(saveRecentProducts());
+            carrousel.setRecentProductList(saveRecentProducts());
         }
-        return carousel;
+        return carrousel;
     }
 
     @Override
-    protected void onPostExecute(Carousel carousel) {
-        super.onPostExecute(carousel);
-        mLoadCarousels.onLoadCarouselsData(carousel);
+    protected void onPostExecute(Carrousel carrousel) {
+        super.onPostExecute(carrousel);
+        mLoadCarousels.onLoadCarouselsData(carrousel);
     }
 
     private List<ProduitEntry> saveRandomProducts(){
@@ -139,6 +138,10 @@ public class FindCarouselsList extends AsyncTask<Void, Void, Carousel> {
             }
         }
         return randomFromSelectedCategoryList;
+    }
+
+    private String getCategoryName(String categoryID) {
+        return db.categorieDao().getCategoryName(Long.valueOf(categoryID)).get(0);
     }
 
     private List<ProduitEntry> saveProductsFromCategory(String categoryID){

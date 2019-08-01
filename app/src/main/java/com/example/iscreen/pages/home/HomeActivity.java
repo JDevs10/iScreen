@@ -9,19 +9,20 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.iscreen.R;
 import com.example.iscreen.database.AppDatabase;
 import com.example.iscreen.pages.Loading;
-import com.example.iscreen.pages.home.fragments.Catalog;
-import com.example.iscreen.pages.home.fragments.Settings;
+import com.example.iscreen.pages.home.fragments.Affichage;
+import com.example.iscreen.pages.home.fragments.Parametre;
+
+/**
+ * Created by JL on 07/19/2019.
+ */
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = HomeActivity.class.getSimpleName();
@@ -63,9 +64,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (savedInstanceState == null){
             //getSupportActionBar().hide();
             //default fragment when activity is running
-            getSupportActionBar().setTitle("Catalog");
+            getSupportActionBar().setTitle("Affichage");
             navigationView.setCheckedItem(R.id.nav_affichage);
-            getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_container, new Catalog()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_container, new Affichage()).commit();
         }
     }
 
@@ -77,9 +78,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 //init Side Menu user information
                 //initMenuHeaderInfo(navigationView);
 
-                toolbar.setTitle("Catalog");
+                toolbar.setTitle("Affichage");
                 navigationView.setCheckedItem(R.id.nav_affichage);
-                getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_container, new Catalog()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_container, new Affichage()).commit();
                 break;
 
             case R.id.nav_settings:
@@ -88,7 +89,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 toolbar.setTitle("Paramètre");
                 navigationView.setCheckedItem(R.id.nav_settings);
-                getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_container, new Settings()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_container, new Parametre()).commit();
                 break;
 
             case R.id.nav_disconnect:
