@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp">
+
+            <CheckBox
+                android:id="@+id/fragment_config_random_cb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Activer la publicité des produits aléatoire."
+                android:textSize="20dp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"/>
+            <CheckBox
+                android:id="@+id/fragment_config_random_category_cb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Activer la publicité des produits aléatoires dans chaque catégorie."
+                android:textSize="20dp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Activer la publicité des produits aléatoires de la categorie."
+                    android:textSize="20dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"/>
+                <Spinner
+                    android:id="@+id/fragment_config_random_categoryX_sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"/>
+            </LinearLayout>
+            <CheckBox
+                android:id="@+id/fragment_config_recent_product_cb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Activer la publicité des produits récente."
+                android:textSize="20dp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nombre de produit affiché dans le carrousel."
+                    android:textSize="20dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"/>
+                <Spinner
+                    android:id="@+id/fragment_config_nbProduct"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"/>
+            </LinearLayout>
+            <CheckBox
+                android:id="@+id/fragment_config_carouselSlide_cb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Activer le défilement des produits."
+                android:textSize="20dp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:layout_margin="10dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vitesse du défilement des produits."
+                    android:textSize="20dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"/>
+                <Spinner
+                    android:id="@+id/fragment_config_carouselSpeed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:textColor="@android:color/black"
+                    android:layout_gravity="center"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/fragment_config_save_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sauvegarder"
+                android:background="@drawable/bg_primary_corner_btn"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:padding="13dp"
+                android:layout_margin="20dp"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+</ScrollView>

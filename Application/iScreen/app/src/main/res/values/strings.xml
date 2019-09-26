@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">i-Screen</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+
+    <string name="erreur_connexion">Erreur réseau. Veuillez vérifier votre connexion internet.</string>
+    <string name="parametres_connexion_incorrect">Erreur d\'authentification. Paramètres de connexion incorrects.</string>
+    <string name="service_indisponible">Service indisponible. Veuillez réessayer plustard.</string>
+    <string name="liste_produits_synchronises">Liste des produits synchronisée avec succès.</string>
+    <string name="miseajour_images_produits">Mise a jour des images produits en cours</string>
+    <string name="miseajour_images_produits_effectuee">Mise a jour des images produits éffectuée avec succès.</string>
+
+    <string name="action_risque_deconnexion">Voulez-vous vous déconnecter? Cela supprime toutes les données téléchargées depuis iScreen.</string>
+</resources>
