@@ -342,6 +342,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
     @Override
     public void onLoadCarouselsData(Carrousel carrousel) {
         if (carrousel != null) {
+            Log.e(TAG, "onLoadCarouselsData() | carrousel != null");
             getRandomProducts(carrousel.getRandomProductList());
             getRandomFromEachCategory(carrousel.getRandomFromEachCategoryList());
             getRandomFromCategoryX(carrousel.getRandomFromSelectedCategoryList(), carrousel.getSelectedCategoryName());

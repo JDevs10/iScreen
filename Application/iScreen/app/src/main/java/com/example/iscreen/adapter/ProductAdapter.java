@@ -74,10 +74,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 viewHolder.product_iv.setImageBitmap(myBitmap);
             } else {
-                viewHolder.product_iv.setImageResource(R.drawable.iscreen_no_image);
+                viewHolder.product_iv.setImageResource(R.drawable.no_image_available);
             }
         } else {
-            viewHolder.product_iv.setImageResource(R.drawable.iscreen_no_image);
+            viewHolder.product_iv.setImageResource(R.drawable.no_image_available);
         }
 
         // Set custom product size (responsible)
