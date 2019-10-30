@@ -617,6 +617,7 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
             dbConfig.setRandomCategory(true);
         }
 
+        Log.e(TAG, "getCategory_x() != "+findConfigurationREST.getConfigs().getCategory_x());
         dbConfig.setRandomCategoryX(findConfigurationREST.getConfigs().getCategory_x());
 
         if (findConfigurationREST.getConfigs().getP_recente().equals("0")){
@@ -626,9 +627,12 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
         }
 
         // App default configurations
-        dbConfig.setCarouselSize(50);
+        dbConfig.setCarouselSize(20);
         dbConfig.setCarouselSlide(true);
         dbConfig.setCarouselSpeed(15);
+        dbConfig.setShowCarouselTitle(true);
+        dbConfig.setFullScreenMode(false);
+        dbConfig.setDarkMode(false);
 
         db.configurationDao().deleteAllConfig();
         db.configurationDao().insertConfig(dbConfig);

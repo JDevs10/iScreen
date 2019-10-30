@@ -113,7 +113,33 @@
                     android:textColor="@android:color/black"
                     android:layout_gravity="center"/>
             </LinearLayout>
-
+            <CheckBox
+                android:id="@+id/fragment_config_carouselTitles_cb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Afficher le titre de chaque carrousel."
+                android:textSize="20dp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:layout_margin="10dp"/>
+            <CheckBox
+                android:id="@+id/fragment_config_fullScreeMode_cb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Activer le mode plein écran."
+                android:textSize="20dp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:layout_margin="10dp"/>
+            <CheckBox
+                android:id="@+id/fragment_config_darkMode_cb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Activer le mode sombre."
+                android:textSize="20dp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:layout_margin="10dp"/>
             <Button
                 android:id="@+id/fragment_config_save_btn"
                 android:layout_width="wrap_content"

@@ -23,7 +23,7 @@ import com.example.iscreen.database.entity.ProduitEntry;
  */
 
 @Database(entities = {ServerEntry.class, TokenEntry.class, UserEntry.class, Configuration.class, ProduitEntry.class, CategorieEntry.class},
-        version = 8,
+        version = 10,
         exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private final String TAG = AppDatabase.class.getSimpleName();

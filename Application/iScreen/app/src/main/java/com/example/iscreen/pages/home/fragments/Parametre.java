@@ -26,6 +26,7 @@ import com.example.iscreen.database.entity.Configuration;
 import com.example.iscreen.remote.ApiUtils;
 import com.example.iscreen.remote.ConnectionManager;
 import com.example.iscreen.remote.model.Config;
+import com.example.iscreen.utility.IScreenUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class Parametre extends Fragment {
     private Configuration currentConfig, saveConfig;
     private AppDatabase db;
 
-    private CheckBox random_cb, randomCat_cb, recentProducts_cb, carouselSlide_cb;
+    private CheckBox random_cb, randomCat_cb, recentProducts_cb, carouselSlide_cb, carouselTitles_cb, fullScreeMode_cb, darkMode_cb;
     private Spinner randomCat_x_sp, nbProduct_sp, carouselSpeed_sp;
     private Button save_btn;
 
@@ -70,6 +71,10 @@ public class Parametre extends Fragment {
         nbProduct_sp = view.findViewById(R.id.fragment_config_nbProduct);
         carouselSlide_cb = view.findViewById(R.id.fragment_config_carouselSlide_cb);
         carouselSpeed_sp = view.findViewById(R.id.fragment_config_carouselSpeed);
+        carouselTitles_cb = view.findViewById(R.id.fragment_config_carouselTitles_cb);
+        fullScreeMode_cb = view.findViewById(R.id.fragment_config_fullScreeMode_cb);
+        darkMode_cb = view.findViewById(R.id.fragment_config_darkMode_cb);
+
         save_btn = view.findViewById(R.id.fragment_config_save_btn);
 
         return view;
@@ -133,6 +138,34 @@ public class Parametre extends Fragment {
             }
         });
 
+        carouselTitles_cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                currentConfig.setShowCarouselTitle(isChecked);
+                db.configurationDao().updateConfig(currentConfig);
+                displayCurrentConfig(currentConfig);
+            }
+        });
+
+        fullScreeMode_cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                currentConfig.setFullScreenMode(isChecked);
+                db.configurationDao().updateConfig(currentConfig);
+                displayCurrentConfig(currentConfig);
+                new IScreenUtility().fullScreenMode(mContext, getActivity());
+            }
+        });
+
+        darkMode_cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                currentConfig.setDarkMode(isChecked);
+                db.configurationDao().updateConfig(currentConfig);
+                displayCurrentConfig(currentConfig);
+            }
+        });
+
         ArrayAdapter<String> categoryListAdapter = new ArrayAdapter<String>(mContext,android.R.layout.simple_spinner_item, getAllCategoryLabels());
         categoryListAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         randomCat_x_sp.setAdapter(categoryListAdapter);
@@ -146,7 +179,7 @@ public class Parametre extends Fragment {
         randomCat_x_sp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Log.e(TAG, " setOnItemSelectedListener : Test with no touch");
+                Log.e(TAG, " setOnItemSelectedListener : Test with no touch || "+parent.getItemAtPosition(position)+"");
                 if ((parent.getItemAtPosition(position)+"").equals("Veuillez selection category")){
                     currentConfig.setRandomCategoryX("-1");
                 }else {
@@ -212,6 +245,9 @@ public class Parametre extends Fragment {
         randomCat_cb.setChecked(config.isRandomCategory());
         recentProducts_cb.setChecked(config.isRecentProducts());
         carouselSlide_cb.setChecked(config.isCarouselSlide());
+        carouselTitles_cb.setChecked(config.isShowCarouselTitle());
+        fullScreeMode_cb.setChecked(config.isFullScreenMode());
+        darkMode_cb.setChecked(config.isDarkMode());
 
         randomCat_x_sp.setSelection(setSelectedCategory(config.getRandomCategoryX()));
         nbProduct_sp.setSelection(setSelectedSize(config.getCarouselSize()));
@@ -261,8 +297,12 @@ public class Parametre extends Fragment {
         String categoryId = null;
 
         Log.e(TAG, " getCategoryId : "+name);
-        if (name == null || name.isEmpty() || name.equals("Veuillez choisir une catégorie")){
+        if (name == null || name.isEmpty()){
             return null;
+        }
+
+        if(name.equals("Veuillez choisir une catégorie")){
+            return "-1";
         }
 
         List<CategorieEntry> categorieEntries = db.categorieDao().getAllCategories();

@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.media.MediaScannerConnection;
@@ -12,10 +13,16 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.OpenableColumns;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import com.example.iscreen.R;
+import com.example.iscreen.database.AppDatabase;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -41,18 +48,39 @@ public final class IScreenUtility {
     public static String ISALES_PATH_FOLDER = "iScreen";
     public static String ISALES_PRODUCTS_IMAGESPATH_FOLDER = "iScreen/iScreen Produits";
 
-    public static int calculateNoOfColumns(Context context) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        int noOfColumns = (int) (dpWidth / 296);
-        return noOfColumns;
+    //Full Screen Mode
+    //Need to be call for each Activity and not fragments
+    public void fullScreenMode(Context context, FragmentActivity fragmentActivity){
+        AppDatabase db = AppDatabase.getInstance(context);
+        boolean status = db.configurationDao().getCurrentConfig().get(0).isFullScreenMode();
+
+        WindowManager.LayoutParams attrs = fragmentActivity.getWindow().getAttributes();
+        if (status) {
+            //Full screen mode activaed
+            ((AppCompatActivity) fragmentActivity).getSupportActionBar().hide();
+            fragmentActivity.getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LOW_PROFILE
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            fragmentActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+
+        }else {
+            //Full screen mode desactivaed
+            ((AppCompatActivity) fragmentActivity).getSupportActionBar().show();
+            fragmentActivity.getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            fragmentActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+        fragmentActivity.getWindow().setAttributes(attrs);
     }
 
-    public static int calculateNoOfColumnsCmde(Context context) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
-        int noOfColumns = (int) (dpWidth / 320);
-        return noOfColumns;
+    public void darkMode(Context context, LinearLayout linearLayout){
+        linearLayout.setBackgroundColor(Color.BLACK);
     }
 
     // Renvoi le nom de l'image du produit a partir de la description
@@ -108,74 +136,12 @@ public final class IScreenUtility {
 //        return descriptionTab[1];
     }
 
-    // Renvoi le nom les images carousel du produit a partir de la description
-    public static String[] getCarouselProduit(String description) {
-
-        String[] carousel;
-        // extraction de la chaine apres code encodage de la photo
-        String[] descriptionTab = description.split(ENCODE_CAROUSEL);
-        Log.e(TAG, "descriptionTab:getCarouselProduit " + descriptionTab.toString());
-        // S'il n'ya pas d'encode de img, on renvoi null
-        if (descriptionTab.length <= 1) {
-            return null;
-        }
-        // extraction de la chaine avant code ':'
-        String[] carouselTab = descriptionTab[1].split(":&");
-        Log.e(TAG, "descriptionTab:carouselTab " + carouselTab.toString());
-        if (carouselTab.length <= 1) {
-            return null;
-        }
-        carousel = carouselTab[0].split(":");
-        return carousel;
-    }
-
-    //    Arromdi les bord d'une image bitmap
-    public static Bitmap getRoundedCornerBitmap(Bitmap source) {
-        int size = Math.min(source.getWidth(), source.getHeight());
-
-        int x = (source.getWidth() - size) / 2;
-        int y = (source.getHeight() - size) / 2;
-
-        Bitmap squaredBitmap = Bitmap.createBitmap(source, x, y, size, size);
-        if (squaredBitmap != source) {
-            source.recycle();
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(size, size, source.getConfig());
-
-        Canvas canvas = new Canvas(bitmap);
-        Paint paint = new Paint();
-        BitmapShader shader = new BitmapShader(squaredBitmap, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP);
-        paint.setShader(shader);
-        paint.setAntiAlias(true);
-
-        float r = size / 2f;
-        canvas.drawCircle(r, r, r, paint);
-
-        squaredBitmap.recycle();
-        return bitmap;
-    }
-
-    public static String strCapitalize(String str) {
-        String name = str;
-        if (name.length() >= 2) {
-            name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
-        }
-
-        return name;
-    }
-
     public static String amountFormat2(String value) {
 
         double valueDouble = Double.parseDouble(value.replace(",","."));
         String str = String.format(Locale.FRANCE,
                 "%,-10.2f", valueDouble);
         return String.valueOf(str);
-    }
-
-    public static String roundOffTo2DecPlaces(String value) {
-        double valueDouble = Double.parseDouble(value);
-        return String.format("%.2f", valueDouble);
     }
 
     /**
@@ -254,6 +220,18 @@ public final class IScreenUtility {
 
         if (file.exists ()) file.delete();
 
+        try{
+            Bitmap imageWithBG = Bitmap.createBitmap(imageToSave.getWidth(), imageToSave.getHeight(),imageToSave.getConfig());  // Create another image the same size
+            imageWithBG.eraseColor(Color.TRANSPARENT);  // set its background to white, or whatever color you want
+            Canvas canvas = new Canvas(imageWithBG);  // create a canvas to draw on the new image
+            canvas.drawBitmap(imageToSave, 0f, 0f, null); // draw old image on the background
+            imageToSave.recycle();  // clear out old image
+
+            imageToSave = imageWithBG;
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
         try {
             FileOutputStream fos = new FileOutputStream(file);
             imageToSave.compress(Bitmap.CompressFormat.JPEG, 85, fos);
@@ -274,61 +252,6 @@ public final class IScreenUtility {
         }
 
     }
-
-    //enregistre la photo d'un produit en loca
-    public static final Target getTargetSaveProduitImage(final String filename) {
-        return new Target() {
-            @Override
-            public void onBitmapLoaded(final Bitmap bitmap, Picasso.LoadedFrom from) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        String currentDateAndTime = getCurrentDateAndTime();
-                        File dir = new File(Environment.getExternalStorageDirectory(), ISALES_PRODUCTS_IMAGESPATH_FOLDER);
-                        if (!dir.exists()) {
-                            if (dir.mkdirs()){
-                                Log.e(TAG, "saveProduitImage: folder created" );
-                            }
-                        }
-
-                        File file = new File(dir, String.format("%s.jpg", filename, currentDateAndTime));
-
-                        if (file.exists ()) file.delete();
-
-                        try {
-                            FileOutputStream fos = new FileOutputStream(file);
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 85, fos);
-                            fos.flush();
-                            fos.close();
-//                            makeSureFileWasCreatedThenMakeAvailable(context, file);
-
-//                            return file.getAbsolutePath();
-
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                            Log.e(TAG, "saveProduitImage:FileNotFoundException "+e.getMessage() );
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                            Log.e(TAG, "saveProduitImage:IOException "+e.getMessage() );
-                        }
-                    }
-                }).start();
-            }
-
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
-
-    }
-
     public static final void deleteProduitsImgFolder() {
         File myDir = new File(Environment.getExternalStorageDirectory(), ISALES_PRODUCTS_IMAGESPATH_FOLDER);
         if (myDir.isDirectory() && myDir.list() != null) {

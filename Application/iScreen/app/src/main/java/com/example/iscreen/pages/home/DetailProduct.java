@@ -10,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -49,6 +50,9 @@ public class DetailProduct extends AppCompatActivity implements FindProductVirtu
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_product);
+
+        //Check / Set Full Screen Mode
+        new IScreenUtility().fullScreenMode(this, this);
 
         db = AppDatabase.getInstance(this);
         if (getIntent().getExtras().getString("ref_produit") != null){
@@ -96,6 +100,15 @@ public class DetailProduct extends AppCompatActivity implements FindProductVirtu
         }
 
         initValues();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void executeFindproductVirtual() {

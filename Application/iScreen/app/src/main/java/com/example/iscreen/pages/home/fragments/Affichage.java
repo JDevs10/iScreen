@@ -11,12 +11,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +39,7 @@ import com.example.iscreen.remote.ConnectionManager;
 import com.example.iscreen.remote.rest.FindConfigurationREST;
 import com.example.iscreen.task.FindCarouselsList;
 import com.example.iscreen.task.FindConfigurationTask;
+import com.example.iscreen.utility.IScreenUtility;
 
 import java.io.Serializable;
 import java.util.List;
@@ -73,21 +77,6 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
     private final Runnable SCROLLING_RUNNABLE_random_rv = new Runnable() {
         @Override
         public void run() {
-            /*
-            random_rv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (checkRandom_rvRunnable){
-                        random_rv.smoothScrollBy(pixelsToMove, 0);
-                        mHandlerRandom_rv.postDelayed((Runnable) getContext(), db.configurationDao().getCurrentConfig().get(0).getCarouselSpeed());
-                        checkRandom_rvRunnable = false;
-                    }else {
-                        mHandlerRandom_rv.removeCallbacksAndMessages(SCROLLING_RUNNABLE_random_rv);
-                        checkRandom_rvRunnable = true;
-                    }
-                }
-            });
-            */
             random_rv.smoothScrollBy(pixelsToMove, 0);
             mHandlerRandom_rv.postDelayed(this, db.configurationDao().getCurrentConfig().get(0).getCarouselSpeed());
         }
@@ -327,7 +316,11 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
     private void setupCarrouselData(){
         showProgressDialog(true, "Produit", "Chargement des carousels...");
 
-        Log.e(TAG, " DB isRandomProduct = "+db.configurationDao().getCurrentConfig().get(0).isRandomProduct());
+        Log.e(TAG, " setupCarrouselData() | DB getCarouselSize = "+db.configurationDao().getCurrentConfig().get(0).getCarouselSize());
+        Log.e(TAG, " setupCarrouselData() | DB isRandomProduct = "+db.configurationDao().getCurrentConfig().get(0).isRandomProduct());
+        Log.e(TAG, " setupCarrouselData() | DB isRandomCategory = "+db.configurationDao().getCurrentConfig().get(0).isRandomCategory());
+        Log.e(TAG, " setupCarrouselData() | DB getRandomCategoryX = "+db.configurationDao().getCurrentConfig().get(0).getRandomCategoryX());
+        Log.e(TAG, " setupCarrouselData() | DB isRecentProducts = "+db.configurationDao().getCurrentConfig().get(0).isRecentProducts());
         FindCarouselsList findCarouselsList = new FindCarouselsList(
                 mContext,
                 Affichage.this,
@@ -357,19 +350,21 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
                 @Override
                 public void onScrolled(final RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-                    int lastItem = llm.findLastCompletelyVisibleItemPosition();
-                    if (lastItem == llm.getItemCount() - 1) {
-                        mHandlerRandom_rv.removeCallbacks(runnable);
-                        Handler postHandler = new Handler();
-                        postHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                recyclerView.setAdapter(null);
-                                recyclerView.setAdapter(adapter);
-                                mHandlerRandom_rv.postDelayed(runnable, 2000);
-                            }
-                        }, 2000);
-                    }
+
+                int lastItem = llm.findLastCompletelyVisibleItemPosition();
+                if (lastItem == llm.getItemCount() - 1) {
+                    mHandlerRandom_rv.removeCallbacks(runnable);
+                    Handler postHandler = new Handler();
+                    postHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            recyclerView.setAdapter(null);
+                            recyclerView.setAdapter(adapter);
+
+                            mHandlerRandom_rv.postDelayed(runnable, 2000);
+                        }
+                    }, 2000);
+                }
                 }
             });
             mHandlerRandom_rv.postDelayed(runnable, 2000);
@@ -379,12 +374,21 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
     private void getRandomProducts(List<ProduitEntry> randomProductList){
         if (db.configurationDao().getCurrentConfig().get(0).isRandomProduct()) {
             if (randomProductList != null || randomProductList.size() != 0) {
-                randomTitle.setText("Produits aléatoire");
+
+                //Show carousel title
+                if(db.configurationDao().getCurrentConfig().get(0).isShowCarouselTitle()){
+                    randomTitle.setText("Produits aléatoire");
+                }else{
+                    randomTitle.setVisibility(View.GONE);
+                }
 
                 final ProductAdapter productAdapter = new ProductAdapter(this.mContext, randomProductList, mainLayoutWidth,mainLayoutHeight, this);
                 final LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
                 random_rv.setLayoutManager(mLinearLayoutManager);
                 random_rv.setAdapter(productAdapter);
+
+                LinearSnapHelper snapHelper = new LinearSnapHelper();
+                snapHelper.attachToRecyclerView(random_rv);
 
                 if (isCarouselSlide) {
                     recycleViewAnimation(randomProductList, random_rv, productAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_random_rv);
@@ -399,12 +403,20 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
     private void getRandomFromEachCategory(List<ProduitEntry> randomFromSelectedCategoryList){
         if (db.configurationDao().getCurrentConfig().get(0).isRandomCategory()) {
             if (randomFromSelectedCategoryList != null || randomFromSelectedCategoryList.size() != 0) {
-                randomCatTitle.setText("Produits de chaque catégorie");
+                //Show carousel title
+                if(db.configurationDao().getCurrentConfig().get(0).isShowCarouselTitle()){
+                    randomCatTitle.setText("Produits de chaque catégorie");
+                }else{
+                    randomCatTitle.setVisibility(View.GONE);
+                }
 
                 final ProductAdapter productAdapter = new ProductAdapter(this.mContext, randomFromSelectedCategoryList, mainLayoutWidth, mainLayoutHeight, this);
                 final LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
                 randomCat_rv.setLayoutManager(mLinearLayoutManager);
                 randomCat_rv.setAdapter(productAdapter);
+
+                LinearSnapHelper snapHelper = new LinearSnapHelper();
+                snapHelper.attachToRecyclerView(randomCat_rv);
 
                 if (isCarouselSlide) {
                     recycleViewAnimation(randomFromSelectedCategoryList, randomCat_rv, productAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_randomCat_rv);
@@ -419,12 +431,20 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
     private void getRandomFromCategoryX(List<ProduitEntry> randomFromCategoryXList, String categoryName){
         if (!db.configurationDao().getCurrentConfig().get(0).getRandomCategoryX().equals("-1")) {
             if (randomFromCategoryXList != null || randomFromCategoryXList.size() != 0) {
-                randomCat_XTitle.setText("Produits de la catégorie : " + categoryName);
+                //Show carousel title
+                if(db.configurationDao().getCurrentConfig().get(0).isShowCarouselTitle()){
+                    randomCat_XTitle.setText("Produits de la catégorie : " + categoryName);
+                }else{
+                    randomCat_XTitle.setVisibility(View.GONE);
+                }
 
                 final ProductAdapter productAdapter = new ProductAdapter(this.mContext, randomFromCategoryXList, mainLayoutWidth, mainLayoutHeight, this);
                 final LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
                 randomCat_X_rv.setLayoutManager(mLinearLayoutManager);
                 randomCat_X_rv.setAdapter(productAdapter);
+
+                LinearSnapHelper snapHelper = new LinearSnapHelper();
+                snapHelper.attachToRecyclerView(randomCat_X_rv);
 
                 if (isCarouselSlide) {
                     recycleViewAnimation(randomFromCategoryXList, randomCat_X_rv, productAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_randomCat_X_rv);
@@ -439,12 +459,20 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
     private void getRecentProducts(List<ProduitEntry> recentProductList){
         if (db.configurationDao().getCurrentConfig().get(0).isRecentProducts()) {
             if (recentProductList != null || recentProductList.size() != 0) {
-                recentProductsTitle.setText("Produits récente");
+                //Show carousel title
+                if(db.configurationDao().getCurrentConfig().get(0).isShowCarouselTitle()){
+                    recentProductsTitle.setText("Produits récente");
+                }else{
+                    recentProductsTitle.setVisibility(View.GONE);
+                }
 
                 final ProductAdapter recentProductAdapter = new ProductAdapter(this.mContext, recentProductList, mainLayoutWidth, mainLayoutHeight, this);
                 final LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
                 recentProducts_rv.setLayoutManager(mLinearLayoutManager);
                 recentProducts_rv.setAdapter(recentProductAdapter);
+
+                LinearSnapHelper snapHelper = new LinearSnapHelper();
+                snapHelper.attachToRecyclerView(recentProducts_rv);
 
                 if (isCarouselSlide) {
                     recycleViewAnimation(recentProductList, recentProducts_rv, recentProductAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_recentProducts_rv);

@@ -15,7 +15,9 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,15 +39,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private NavigationView navigationView;
     private static AppDatabase db;
 
+    private ImageView icon;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        //Hides App bar at the top..................................................................
-        //getSupportActionBar().hide();
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         db = AppDatabase.getInstance(getApplicationContext());
 
@@ -65,6 +64,12 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        icon = navigationView.getHeaderView(0).findViewById(R.id.nav_header_currentUserImage);
+        icon.setImageResource(R.mipmap.ic_launcher);
+
+        //Check / Set Full Screen Mode
+        new IScreenUtility().fullScreenMode(this, this);
 
         if (savedInstanceState == null){
             //getSupportActionBar().hide();

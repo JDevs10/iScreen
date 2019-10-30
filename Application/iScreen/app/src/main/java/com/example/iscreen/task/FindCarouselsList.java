@@ -138,7 +138,7 @@ public class FindCarouselsList extends AsyncTask<Void, Void, Carrousel> {
                 randomFromSelectedCategoryList.add(allProducts.get(x));
                 index++;
 //                Log.e(TAG, "first => x: "+x+"\n" +
-//                        "index: "+index+"\n" +
+//                        "index: "+index+"\n" +n
 //                        "saved size: "+saved.size());
             }
         }
