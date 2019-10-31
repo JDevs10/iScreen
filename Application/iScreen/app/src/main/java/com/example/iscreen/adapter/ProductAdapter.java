@@ -1,5 +1,6 @@
 package com.example.iscreen.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.iscreen.R;
 import com.example.iscreen.database.entity.ProduitEntry;
+import com.example.iscreen.interfaces.OnItemClickListener;
 import com.example.iscreen.interfaces.ProduitsAdapterListener;
 import com.example.iscreen.pages.home.DetailProduct;
 
@@ -28,6 +31,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
     private Context mContext;
     private List<ProduitEntry> randomList;
     private ProduitsAdapterListener productListener;
+    private static OnItemClickListener onItemClickListener1;
 
     private int mainLayoutWidth = 0;
     private int mainLayoutHeight = 0;
@@ -40,7 +44,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
         this.productListener = productListener;
     }
 
-    public class RandomAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class RandomAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         LinearLayout mainLayout;
         ImageView product_iv;
         TextView product_name;
@@ -53,6 +57,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
             product_name = itemView.findViewById(R.id.custom_random_catalog_item_productname);
             product_price = itemView.findViewById(R.id.custom_random_catalog_item_productprice);
         }
+
+        @Override
+        public void onClick(View v) {
+            onItemClickListener1.setOnItemClick(v, randomList.get(getAdapterPosition()));
+        }
+
+        public void setOnItemClickListener (final OnItemClickListener onItemClickListener) {
+            onItemClickListener1 = onItemClickListener;
+        }
     }
 
     @NonNull
@@ -63,7 +76,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RandomAdapterViewHolder viewHolder, final int i) {
+    public void onBindViewHolder(@NonNull final RandomAdapterViewHolder viewHolder, final int i) {
         viewHolder.product_name.setText(randomList.get(i).getLabel());
         viewHolder.product_price.setText(randomList.get(i).getPrice());
 
@@ -83,6 +96,9 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
         // Set custom product size (responsible)
         viewHolder.mainLayout.setLayoutParams(new FrameLayout.LayoutParams(mainLayoutWidth, mainLayoutHeight));
 
+        //onItemClickListener.setOnItemClick(viewHolder.mainLayout, randomList.get(i));
+
+        /*
         viewHolder.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +106,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
                 productListener.onDetailsSelected(randomList.get(i));
             }
         });
+        */
     }
 
     @Override
@@ -97,4 +114,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
         return randomList.size();
     }
 
+    public void setOnItemClickListener (final OnItemClickListener onItemClickListener) {
+        this.onItemClickListener1 = onItemClickListener;
+    }
 }

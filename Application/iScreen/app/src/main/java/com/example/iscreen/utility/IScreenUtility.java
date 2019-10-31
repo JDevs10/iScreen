@@ -36,6 +36,7 @@ import java.util.Locale;
 
 /**
  * Created by netserve on 30/08/2018.
+ * Updates by JDevs
  */
 
 public final class IScreenUtility {
@@ -219,18 +220,6 @@ public final class IScreenUtility {
         File file = new File(dir, String.format("%s.jpg", filename, currentDateAndTime));
 
         if (file.exists ()) file.delete();
-
-        try{
-            Bitmap imageWithBG = Bitmap.createBitmap(imageToSave.getWidth(), imageToSave.getHeight(),imageToSave.getConfig());  // Create another image the same size
-            imageWithBG.eraseColor(Color.TRANSPARENT);  // set its background to white, or whatever color you want
-            Canvas canvas = new Canvas(imageWithBG);  // create a canvas to draw on the new image
-            canvas.drawBitmap(imageToSave, 0f, 0f, null); // draw old image on the background
-            imageToSave.recycle();  // clear out old image
-
-            imageToSave = imageWithBG;
-        }catch (Exception e){
-            e.printStackTrace();
-        }
 
         try {
             FileOutputStream fos = new FileOutputStream(file);

@@ -632,7 +632,6 @@ public class Loading extends AppCompatActivity implements OnInternauteLoginCompl
         dbConfig.setCarouselSpeed(15);
         dbConfig.setShowCarouselTitle(true);
         dbConfig.setFullScreenMode(false);
-        dbConfig.setDarkMode(false);
 
         db.configurationDao().deleteAllConfig();
         db.configurationDao().insertConfig(dbConfig);

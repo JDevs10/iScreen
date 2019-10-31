@@ -41,7 +41,7 @@ public class Parametre extends Fragment {
     private Configuration currentConfig, saveConfig;
     private AppDatabase db;
 
-    private CheckBox random_cb, randomCat_cb, recentProducts_cb, carouselSlide_cb, carouselTitles_cb, fullScreeMode_cb, darkMode_cb;
+    private CheckBox random_cb, randomCat_cb, recentProducts_cb, carouselSlide_cb, carouselTitles_cb, fullScreeMode_cb;
     private Spinner randomCat_x_sp, nbProduct_sp, carouselSpeed_sp;
     private Button save_btn;
 
@@ -73,7 +73,6 @@ public class Parametre extends Fragment {
         carouselSpeed_sp = view.findViewById(R.id.fragment_config_carouselSpeed);
         carouselTitles_cb = view.findViewById(R.id.fragment_config_carouselTitles_cb);
         fullScreeMode_cb = view.findViewById(R.id.fragment_config_fullScreeMode_cb);
-        darkMode_cb = view.findViewById(R.id.fragment_config_darkMode_cb);
 
         save_btn = view.findViewById(R.id.fragment_config_save_btn);
 
@@ -154,15 +153,6 @@ public class Parametre extends Fragment {
                 db.configurationDao().updateConfig(currentConfig);
                 displayCurrentConfig(currentConfig);
                 new IScreenUtility().fullScreenMode(mContext, getActivity());
-            }
-        });
-
-        darkMode_cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                currentConfig.setDarkMode(isChecked);
-                db.configurationDao().updateConfig(currentConfig);
-                displayCurrentConfig(currentConfig);
             }
         });
 
@@ -247,7 +237,6 @@ public class Parametre extends Fragment {
         carouselSlide_cb.setChecked(config.isCarouselSlide());
         carouselTitles_cb.setChecked(config.isShowCarouselTitle());
         fullScreeMode_cb.setChecked(config.isFullScreenMode());
-        darkMode_cb.setChecked(config.isDarkMode());
 
         randomCat_x_sp.setSelection(setSelectedCategory(config.getRandomCategoryX()));
         nbProduct_sp.setSelection(setSelectedSize(config.getCarouselSize()));

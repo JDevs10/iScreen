@@ -17,9 +17,12 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,6 +31,7 @@ import com.example.iscreen.adapter.ProductAdapter;
 import com.example.iscreen.database.AppDatabase;
 import com.example.iscreen.database.entity.Configuration;
 import com.example.iscreen.interfaces.FindConfigurationListener;
+import com.example.iscreen.interfaces.OnItemClickListener;
 import com.example.iscreen.interfaces.ProduitsAdapterListener;
 import com.example.iscreen.model.Carrousel;
 import com.example.iscreen.database.entity.ProduitEntry;
@@ -57,6 +61,8 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
     private RecyclerView randomCat_X_rv;
     private RecyclerView recentProducts_rv;
 
+    private ProductAdapter productAdapter = null;
+
     private TextView randomTitle, randomCatTitle, randomCat_XTitle, recentProductsTitle;
 
     private ProgressDialog progressDialog;
@@ -74,7 +80,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
 
     private boolean checkRandom_rvRunnable = false;
     private final Handler mHandlerRandom_rv = new Handler(Looper.getMainLooper());
-    private final Runnable SCROLLING_RUNNABLE_random_rv = new Runnable() {
+    private Runnable SCROLLING_RUNNABLE_random_rv = new Runnable() {
         @Override
         public void run() {
             random_rv.smoothScrollBy(pixelsToMove, 0);
@@ -275,24 +281,48 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
                 Log.e(TAG, "setResponsible() ==> 0 ; 0");
                 break;
             case 1:
-                mainLayoutWidth = 1000;
-                mainLayoutHeight = 1500;
-                Log.e(TAG, "setResponsible() ==> 1000 ; 1500");
+                if (db.configurationDao().getCurrentConfig().get(0).isShowCarouselTitle()){
+                    mainLayoutWidth = 1000;
+                    mainLayoutHeight = 1600;
+                    Log.e(TAG, "setResponsible() ==> 1000 ; 1600");
+                }else{
+                    mainLayoutWidth = 1000;
+                    mainLayoutHeight = 1800;
+                    Log.e(TAG, "setResponsible() ==> 1000 ; 1800");
+                }
                 break;
             case 2:
-                mainLayoutWidth = 650;
-                mainLayoutHeight = 650;
-                Log.e(TAG, "setResponsible() ==> 650 ; 650");
+                if (db.configurationDao().getCurrentConfig().get(0).isShowCarouselTitle()){
+                    mainLayoutWidth = 650;
+                    mainLayoutHeight = 650;
+                    Log.e(TAG, "setResponsible() ==> 650 ; 650");
+                }else {
+                    mainLayoutWidth = 700;
+                    mainLayoutHeight = 900;
+                    Log.e(TAG, "setResponsible() ==> 700 ; 900");
+                }
                 break;
             case 3:
-                mainLayoutWidth = 400;
-                mainLayoutHeight = 400;
-                Log.e(TAG, "setResponsible() ==> 400 ; 400");
+                if (db.configurationDao().getCurrentConfig().get(0).isShowCarouselTitle()) {
+                    mainLayoutWidth = 400;
+                    mainLayoutHeight = 400;
+                    Log.e(TAG, "setResponsible() ==> 400 ; 400");
+                }else{
+                    mainLayoutWidth = 550;
+                    mainLayoutHeight = 550;
+                    Log.e(TAG, "setResponsible() ==> 550 ; 550");
+                }
                 break;
             case 4:
-                mainLayoutWidth = 350;
-                mainLayoutHeight = 350;
-                Log.e(TAG, "setResponsible() ==> 350 ; 350");
+                if (db.configurationDao().getCurrentConfig().get(0).isShowCarouselTitle()) {
+                    mainLayoutWidth = 350;
+                    mainLayoutHeight = 350;
+                    Log.e(TAG, "setResponsible() ==> 350 ; 350");
+                }else{
+                    mainLayoutWidth = 425;
+                    mainLayoutHeight = 425;
+                    Log.e(TAG, "setResponsible() ==> 425 ; 425");
+                }
                 break;
         }
     }
@@ -344,7 +374,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
         showProgressDialog(false, null, null);
     }
 
-    private void recycleViewAnimation(List<ProduitEntry> productList, final RecyclerView theRecyclerView, final RecyclerView.Adapter adapter, final LinearLayoutManager llm, final Runnable runnable) {
+    private void recycleViewAnimation(List<ProduitEntry> productList, final RecyclerView theRecyclerView, final ProductAdapter adapter, final LinearLayoutManager llm, final Runnable runnable) {
         if (productList == null || productList.size() != 0) {
             theRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -361,13 +391,13 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
                             recyclerView.setAdapter(null);
                             recyclerView.setAdapter(adapter);
 
-                            mHandlerRandom_rv.postDelayed(runnable, 2000);
+                            mHandlerRandom_rv.postDelayed(runnable, db.configurationDao().getCurrentConfig().get(0).getCarouselSpeed());
                         }
                     }, 2000);
                 }
                 }
             });
-            mHandlerRandom_rv.postDelayed(runnable, 2000);
+            mHandlerRandom_rv.postDelayed(runnable, db.configurationDao().getCurrentConfig().get(0).getCarouselSpeed());
         }
     }
 
@@ -382,7 +412,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
                     randomTitle.setVisibility(View.GONE);
                 }
 
-                final ProductAdapter productAdapter = new ProductAdapter(this.mContext, randomProductList, mainLayoutWidth,mainLayoutHeight, this);
+                productAdapter = new ProductAdapter(this.mContext, randomProductList, mainLayoutWidth,mainLayoutHeight, this);
                 final LinearLayoutManager mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
                 random_rv.setLayoutManager(mLinearLayoutManager);
                 random_rv.setAdapter(productAdapter);

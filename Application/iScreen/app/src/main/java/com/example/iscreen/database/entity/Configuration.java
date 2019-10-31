@@ -26,7 +26,6 @@ public class Configuration {
     private boolean carouselSlide;
     private int carouselSpeed;
     private boolean fullScreenMode;
-    private boolean darkMode;
     private boolean showCarouselTitle;
 
     public Configuration() {
@@ -102,14 +101,6 @@ public class Configuration {
 
     public void setFullScreenMode(boolean fullScreenMode) {
         this.fullScreenMode = fullScreenMode;
-    }
-
-    public boolean isDarkMode() {
-        return darkMode;
-    }
-
-    public void setDarkMode(boolean darkMode) {
-        this.darkMode = darkMode;
     }
 
     public boolean isShowCarouselTitle() {
