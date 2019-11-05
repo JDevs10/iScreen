@@ -1,6 +1,7 @@
 package com.example.iscreen.task;
 
 import android.content.Context;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -49,24 +50,33 @@ public class FindCarouselsList extends AsyncTask<Void, Void, Carrousel> {
 
         if (randomProduct || randomCategory || !randomCategoryX.equals("-1") || recentProducts){
             carrousel = new Carrousel();
+            Log.e(TAG, "Carrousel: new Carrousel");
         }
-        Log.e(TAG, " Boolean randomProduct : "+randomProduct);
-        if (randomProduct){
-            carrousel.setRandomProductList(saveRandomProducts());
+
+        try{
+            Log.e(TAG, " Boolean randomProduct : "+randomProduct);
+            if (randomProduct){
+                carrousel.setRandomProductList(saveRandomProducts());
+            }
+            Log.e(TAG, " Boolean randomCategory : "+randomCategory);
+            if (randomCategory){
+                carrousel.setRandomFromEachCategoryList(saveRandomFromEachCategory());
+            }
+            Log.e(TAG, " String randomCategoryX : "+randomCategoryX);
+            if (!randomCategoryX.equals("-1")){
+                carrousel.setSelectedCategoryName(getCategoryName(randomCategoryX));
+                carrousel.setRandomFromSelectedCategoryList(saveProductsFromCategory(randomCategoryX));
+            }
+            Log.e(TAG, " Boolean recentProducts : "+recentProducts);
+            if (recentProducts){
+                carrousel.setRecentProductList(saveRecentProducts());
+            }
+        }catch (Exception e){
+            carrousel = null;
+            Log.e(TAG, "Exception:\n"+e.getMessage());
+            e.printStackTrace();
         }
-        Log.e(TAG, " Boolean randomCategory : "+randomCategory);
-        if (randomCategory){
-            carrousel.setRandomFromEachCategoryList(saveRandomFromEachCategory());
-        }
-        Log.e(TAG, " String randomCategoryX : "+randomCategoryX);
-        if (!randomCategoryX.equals("-1")){
-            carrousel.setSelectedCategoryName(getCategoryName(randomCategoryX));
-            carrousel.setRandomFromSelectedCategoryList(saveProductsFromCategory(randomCategoryX));
-        }
-        Log.e(TAG, " Boolean recentProducts : "+recentProducts);
-        if (recentProducts){
-            carrousel.setRecentProductList(saveRecentProducts());
-        }
+
         return carrousel;
     }
 
@@ -84,27 +94,58 @@ public class FindCarouselsList extends AsyncTask<Void, Void, Carrousel> {
         Random random = new Random();
 
         int index = 0;
+        if(CAROUSEL_ITEM_SIZE < max) {
+            // If the product list is > than the carousel item size
+            Log.e(TAG, "Max: "+max+" > CAROUSEL_ITEM_SIZE: "+CAROUSEL_ITEM_SIZE);
+            while (index < CAROUSEL_ITEM_SIZE) {
+                int x = random.nextInt(((max - 1) - 0) + 1) + 0;
 
-        while (index < CAROUSEL_ITEM_SIZE){
-            int x = random.nextInt(((max-1) - 1) + 1) + 1;
-
-            //Check if the product exist in the filter dataList
-            if (saved.size() != 0){
-                if (!saved.contains(x)) {
+                // Check if the product exist in the filter dataList
+                if (saved.size() != 0) {
+                    if (!saved.contains(x)) {
+                        saved.add(x);
+                        randomProductList.add(allProducts.get(x));
+                        index++;
+                        Log.e(TAG, "next => x: " + x + "\n" +
+                                "index: " + index + "\n" +
+                                "saved size: " + saved.size());
+                    }
+                } else {
                     saved.add(x);
                     randomProductList.add(allProducts.get(x));
                     index++;
-                    Log.e(TAG, "next => x: "+x+"\n" +
-                            "index: "+index+"\n" +
-                            "saved size: "+saved.size());
+                    Log.e(TAG, "first => x: " + x + "\n" +
+                            "index: " + index + "\n" +
+                            "saved size: " + saved.size());
                 }
-            }else{
-                saved.add(x);
-                randomProductList.add(allProducts.get(x));
-                index++;
-                Log.e(TAG, "first => x: "+x+"\n" +
-                        "index: "+index+"\n" +
-                        "saved size: "+saved.size());
+            }
+        }else{
+            // If the product list is < than the carousel item size
+            Log.e(TAG, "Max: "+max+" < CAROUSEL_ITEM_SIZE: "+CAROUSEL_ITEM_SIZE);
+            while (index < max) {
+                int x = random.nextInt(((max - 1) - 0) + 1) + 0;
+                Log.e(TAG, "Random X: "+x+"\n");
+
+                // Check if the product exist in the filter dataList
+                if (saved.size() != 0) {
+                    if (!saved.contains(x)) {
+                        saved.add(x);
+                        randomProductList.add(allProducts.get(x));
+                        index++;
+                        Log.e(TAG, "next => x: " + x + "\n" +
+                                "index: " + index + "\n" +
+                                "saved size: " + saved.size());
+                    } else{
+                        Log.e(TAG, "Random X: "+x+" already used!");
+                    }
+                } else {
+                    saved.add(x);
+                    randomProductList.add(allProducts.get(x));
+                    index++;
+                    Log.e(TAG, "first => x: " + x + "\n" +
+                            "index: " + index + "\n" +
+                            "saved size: " + saved.size());
+                }
             }
         }
         return randomProductList;
@@ -120,26 +161,53 @@ public class FindCarouselsList extends AsyncTask<Void, Void, Carrousel> {
 
         int index = 0;
 
-        while (index < CAROUSEL_ITEM_SIZE){
-            int x = random.nextInt(((max-1) - 1) + 1) + 1;
+        if(CAROUSEL_ITEM_SIZE < max) {
+            // If the product list is > than the carousel item size
+            while (index < CAROUSEL_ITEM_SIZE) {
+                int x = random.nextInt(((max - 1) - 0) + 1) + 0;
 
-            //Check if the product exist in the filter dataList
-            if (saved.size() != 0){
-                if (!saved.contains(x)) {
-                    saved.add(x);
-                    randomFromSelectedCategoryList.add(allProducts.get(x));
-                    index++;
+                //Check if the product exist in the filter dataList
+                if (saved.size() != 0) {
+                    if (!saved.contains(x)) {
+                        saved.add(x);
+                        randomFromSelectedCategoryList.add(allProducts.get(x));
+                        index++;
 //                    Log.e(TAG, "next => x: "+x+"\n" +
 //                            "index: "+index+"\n" +
 //                            "saved size: "+saved.size());
-                }
-            }else{
-                saved.add(x);
-                randomFromSelectedCategoryList.add(allProducts.get(x));
-                index++;
+                    }
+                } else {
+                    saved.add(x);
+                    randomFromSelectedCategoryList.add(allProducts.get(x));
+                    index++;
 //                Log.e(TAG, "first => x: "+x+"\n" +
 //                        "index: "+index+"\n" +n
 //                        "saved size: "+saved.size());
+                }
+            }
+        }else{
+            // If the product list is < than the carousel item size
+            while (index < max) {
+                int x = random.nextInt(((max - 1) - 0) + 1) + 0;
+
+                //Check if the product exist in the filter dataList
+                if (saved.size() != 0) {
+                    if (!saved.contains(x)) {
+                        saved.add(x);
+                        randomFromSelectedCategoryList.add(allProducts.get(x));
+                        index++;
+//                    Log.e(TAG, "next => x: "+x+"\n" +
+//                            "index: "+index+"\n" +
+//                            "saved size: "+saved.size());
+                    }
+                } else {
+                    saved.add(x);
+                    randomFromSelectedCategoryList.add(allProducts.get(x));
+                    index++;
+//                Log.e(TAG, "first => x: "+x+"\n" +
+//                        "index: "+index+"\n" +n
+//                        "saved size: "+saved.size());
+                }
             }
         }
         return randomFromSelectedCategoryList;

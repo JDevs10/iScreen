@@ -14,84 +14,124 @@
             android:layout_marginRight="10dp"
             android:layout_marginBottom="10dp">
 
-            <CheckBox
-                android:id="@+id/fragment_config_random_cb"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Activer la publicité des produits aléatoire."
-                android:textSize="20dp"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"/>
-            <CheckBox
-                android:id="@+id/fragment_config_random_category_cb"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Activer la publicité des produits aléatoires dans chaque catégorie."
-                android:textSize="20dp"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Activer la publicité des produits aléatoires de la categorie."
-                    android:textSize="20dp"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"/>
-                <Spinner
-                    android:id="@+id/fragment_config_random_categoryX_sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"/>
-            </LinearLayout>
-            <CheckBox
-                android:id="@+id/fragment_config_recent_product_cb"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Activer la publicité des produits récente."
-                android:textSize="20dp"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"/>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nombre de produit affiché dans le carrousel."
-                    android:textSize="20dp"
-                    android:textColor="@android:color/black"
-                    android:textStyle="bold"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"/>
-                <Spinner
-                    android:id="@+id/fragment_config_nbProduct"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"/>
-            </LinearLayout>
-            <CheckBox
-                android:id="@+id/fragment_config_carouselSlide_cb"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Activer le défilement des produits."
-                android:textSize="20dp"
-                android:textColor="@android:color/black"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Configuration de chaque carousels"
+                android:textSize="30dp"
                 android:textStyle="bold"
-                android:layout_margin="10dp"/>
+                android:textColor="@android:color/black"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"/>
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@drawable/border_layout"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp">
+                <CheckBox
+                    android:id="@+id/fragment_config_random_cb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Activer la publicité des produits aléatoire."
+                    android:textSize="20dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"/>
+                <CheckBox
+                    android:id="@+id/fragment_config_random_category_cb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Activer la publicité des produits aléatoires dans chaque catégorie."
+                    android:textSize="20dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Activer la publicité des produits aléatoires de la categorie."
+                        android:textSize="20dp"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        android:layout_weight="2"/>
+                    <Spinner
+                        android:id="@+id/fragment_config_random_categoryX_sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+                <CheckBox
+                    android:id="@+id/fragment_config_recent_product_cb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="Activer la publicité des produits récente."
+                    android:textSize="20dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"/>
+                <Button
+                    android:id="@+id/fragment_config_save_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sauvegarder"
+                    android:background="@drawable/bg_primary_corner_btn"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold"
+                    android:padding="13dp"
+                    android:layout_margin="20dp"
+                    android:layout_gravity="right"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Configuration des carousels"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@drawable/border_layout"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="50dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nombre de produit affiché dans le carrousel."
+                        android:textSize="20dp"
+                        android:textColor="@android:color/black"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"/>
+                    <Spinner
+                        android:id="@+id/fragment_config_nbProduct"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"/>
+                </LinearLayout>
+                <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -113,36 +153,72 @@
                     android:textColor="@android:color/black"
                     android:layout_gravity="center"/>
             </LinearLayout>
-            <CheckBox
-                android:id="@+id/fragment_config_carouselTitles_cb"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Afficher le titre de chaque carrousel."
-                android:textSize="20dp"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"
-                android:layout_margin="10dp"/>
-            <CheckBox
-                android:id="@+id/fragment_config_fullScreeMode_cb"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Activer le mode plein écran."
-                android:textSize="20dp"
-                android:textColor="@android:color/black"
-                android:textStyle="bold"
-                android:layout_margin="10dp"/>
-            <Button
-                android:id="@+id/fragment_config_save_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sauvegarder"
-                android:background="@drawable/bg_primary_corner_btn"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:padding="13dp"
-                android:layout_margin="20dp"
-                android:layout_gravity="center"/>
 
+                <CheckBox
+                    android:id="@+id/fragment_config_carouselSlide_cb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Activer le défilement des produits."
+                    android:textSize="20dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:layout_margin="10dp"/>
+                <CheckBox
+                    android:id="@+id/fragment_config_carouselTitles_cb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Afficher le titre de chaque carrousel."
+                    android:textSize="20dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:layout_margin="10dp"/>
+                <CheckBox
+                    android:id="@+id/fragment_config_fullScreeMode_cb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Activer le mode plein écran."
+                    android:textSize="20dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:layout_margin="10dp"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Configuration des Produits"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:background="@drawable/border_layout"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="50dp">
+                <CheckBox
+                    android:id="@+id/fragment_config_productTitle_cb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Afficher le nom de chaque produit."
+                    android:textSize="20dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:layout_margin="10dp"/>
+                <CheckBox
+                    android:id="@+id/fragment_config_productPrice_cb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Afficher le price de chaque produit."
+                    android:textSize="20dp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:layout_margin="10dp"/>
+            </LinearLayout>
         </LinearLayout>
 
 </ScrollView>

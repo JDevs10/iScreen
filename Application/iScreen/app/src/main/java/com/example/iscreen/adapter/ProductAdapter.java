@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.iscreen.R;
+import com.example.iscreen.database.AppDatabase;
 import com.example.iscreen.database.entity.ProduitEntry;
 import com.example.iscreen.interfaces.OnItemClickListener;
 import com.example.iscreen.interfaces.ProduitsAdapterListener;
@@ -32,6 +33,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
     private List<ProduitEntry> randomList;
     private ProduitsAdapterListener productListener;
     private static OnItemClickListener onItemClickListener1;
+    private AppDatabase db;
 
     private int mainLayoutWidth = 0;
     private int mainLayoutHeight = 0;
@@ -42,6 +44,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
         this.mainLayoutWidth = mainLayoutWidth;
         this.mainLayoutHeight = mainLayoutHeight;
         this.productListener = productListener;
+        this.db = AppDatabase.getInstance(this.mContext);
     }
 
     public class RandomAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -77,11 +80,27 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
 
     @Override
     public void onBindViewHolder(@NonNull final RandomAdapterViewHolder viewHolder, final int i) {
-        viewHolder.product_name.setText(randomList.get(i).getLabel());
-        viewHolder.product_price.setText(randomList.get(i).getPrice());
 
+        // Show Product Title
+        if (db.configurationDao().getCurrentConfig().get(0).isProductTitle()){
+            viewHolder.product_name.setVisibility(View.VISIBLE);
+            viewHolder.product_name.setText(randomList.get(i).getLabel());
+        }else{
+            viewHolder.product_name.setText("");
+            viewHolder.product_name.setVisibility(View.GONE);
+        }
+
+        // Show Product Price
+        if (db.configurationDao().getCurrentConfig().get(0).isProductPrice()){
+            viewHolder.product_price.setVisibility(View.VISIBLE);
+            viewHolder.product_price.setText(randomList.get(i).getPrice());
+        }else{
+            viewHolder.product_price.setText("");
+            viewHolder.product_price.setVisibility(View.GONE);
+        }
+
+        // Show Product Image
         if (randomList.get(i).getFile_content() != null) {
-
             File imgFile = new File(randomList.get(i).getFile_content());
             if (imgFile.exists()) {
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
@@ -96,17 +115,13 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
         // Set custom product size (responsible)
         viewHolder.mainLayout.setLayoutParams(new FrameLayout.LayoutParams(mainLayoutWidth, mainLayoutHeight));
 
-        //onItemClickListener.setOnItemClick(viewHolder.mainLayout, randomList.get(i));
-
-        /*
         viewHolder.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e(TAG, "Show Product '"+randomList.get(i).getLabel()+"' In Detail !!!");
-                productListener.onDetailsSelected(randomList.get(i));
+                Log.e(TAG, "Feature is desactivated or commented!!\nShow Product '"+randomList.get(i).getLabel()+"' In Detail !!!");
+                // productListener.onDetailsSelected(randomList.get(i));
             }
         });
-        */
     }
 
     @Override

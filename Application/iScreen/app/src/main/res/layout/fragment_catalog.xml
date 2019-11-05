@@ -12,6 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+        <!--This TextView is to access the side menu easier in fullScreen mode when the products are moving-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
         <LinearLayout
             android:layout_width="match_parent"

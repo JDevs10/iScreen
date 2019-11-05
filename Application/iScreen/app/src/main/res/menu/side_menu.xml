@@ -7,9 +7,17 @@
             android:title="Affichage"
             android:icon="@drawable/ic_screen_black_24dp"/>
         <item
+            android:id="@+id/nav_refresh"
+            android:title="Synchronisation"
+            android:icon="@drawable/ic_refresh_black_24dp"/>
+        <item
             android:id="@+id/nav_settings"
             android:title="Parametre"
             android:icon="@drawable/ic_settings_black_24dp"/>
+        <item
+            android:id="@+id/nav_about"
+            android:title="A Props"
+            android:icon="@drawable/ic_about_black_24dp"/>
         <item
             android:id="@+id/nav_disconnect"
             android:title="Déconnecter"

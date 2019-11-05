@@ -41,7 +41,7 @@ public class Parametre extends Fragment {
     private Configuration currentConfig, saveConfig;
     private AppDatabase db;
 
-    private CheckBox random_cb, randomCat_cb, recentProducts_cb, carouselSlide_cb, carouselTitles_cb, fullScreeMode_cb;
+    private CheckBox random_cb, randomCat_cb, recentProducts_cb, carouselSlide_cb, carouselTitles_cb, fullScreeMode_cb, productTitle_cb, productPrice_cb;
     private Spinner randomCat_x_sp, nbProduct_sp, carouselSpeed_sp;
     private Button save_btn;
 
@@ -73,6 +73,8 @@ public class Parametre extends Fragment {
         carouselSpeed_sp = view.findViewById(R.id.fragment_config_carouselSpeed);
         carouselTitles_cb = view.findViewById(R.id.fragment_config_carouselTitles_cb);
         fullScreeMode_cb = view.findViewById(R.id.fragment_config_fullScreeMode_cb);
+        productTitle_cb = view.findViewById(R.id.fragment_config_productTitle_cb);
+        productPrice_cb = view.findViewById(R.id.fragment_config_productPrice_cb);
 
         save_btn = view.findViewById(R.id.fragment_config_save_btn);
 
@@ -153,6 +155,24 @@ public class Parametre extends Fragment {
                 db.configurationDao().updateConfig(currentConfig);
                 displayCurrentConfig(currentConfig);
                 new IScreenUtility().fullScreenMode(mContext, getActivity());
+            }
+        });
+
+        productTitle_cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                currentConfig.setProductTitle(isChecked);
+                db.configurationDao().updateConfig(currentConfig);
+                displayCurrentConfig(currentConfig);
+            }
+        });
+
+        productPrice_cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                currentConfig.setProductPrice(isChecked);
+                db.configurationDao().updateConfig(currentConfig);
+                displayCurrentConfig(currentConfig);
             }
         });
 
@@ -237,11 +257,14 @@ public class Parametre extends Fragment {
         carouselSlide_cb.setChecked(config.isCarouselSlide());
         carouselTitles_cb.setChecked(config.isShowCarouselTitle());
         fullScreeMode_cb.setChecked(config.isFullScreenMode());
+        productTitle_cb.setChecked(config.isProductTitle());
+        productPrice_cb.setChecked(config.isProductPrice());
 
         randomCat_x_sp.setSelection(setSelectedCategory(config.getRandomCategoryX()));
         nbProduct_sp.setSelection(setSelectedSize(config.getCarouselSize()));
         carouselSpeed_sp.setSelection(setSelectedSpeed(config.getCarouselSpeed()));
 
+        /*
         String log = " DB Config:\n" +
                 "ID: "+config.getId()+"\n" +
                 "Random Product => "+config.isRandomProduct()+"\n" +
@@ -252,6 +275,7 @@ public class Parametre extends Fragment {
                 "Carrousel Slide => "+config.isCarouselSlide()+"\n" +
                 "Speed Slide => "+config.getCarouselSpeed()+"\n";
         Log.e(TAG, log);
+        */
     }
 
     private int setSelectedCategory(String categoryID) {

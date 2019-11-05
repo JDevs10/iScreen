@@ -27,6 +27,8 @@ public class Configuration {
     private int carouselSpeed;
     private boolean fullScreenMode;
     private boolean showCarouselTitle;
+    private boolean productTitle;
+    private boolean productPrice;
 
     public Configuration() {
     }
@@ -109,5 +111,21 @@ public class Configuration {
 
     public void setShowCarouselTitle(boolean showCarouselTitle) {
         this.showCarouselTitle = showCarouselTitle;
+    }
+
+    public boolean isProductTitle() {
+        return productTitle;
+    }
+
+    public void setProductTitle(boolean productTitle) {
+        this.productTitle = productTitle;
+    }
+
+    public boolean isProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(boolean productPrice) {
+        this.productPrice = productPrice;
     }
 }

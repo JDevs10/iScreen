@@ -6,5 +6,6 @@
     <color name="colorPrimaryDark">#009be8</color> <!-- 2B8DFC -->
     <color name="colorAccent">#2BFCFC</color>
 
-
+    <color name="transparent">#00FFFFFF</color>
+    <color name="click_selector">#ccE0E0E0</color>
 </resources>

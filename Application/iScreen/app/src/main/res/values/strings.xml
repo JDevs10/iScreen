@@ -11,5 +11,7 @@
     <string name="miseajour_images_produits">Mise a jour des images produits en cours</string>
     <string name="miseajour_images_produits_effectuee">Mise a jour des images produits éffectuée avec succès.</string>
 
+    <string name="action_sychro">Cette action risque de prendre du temps, veuillez ne pas arreter l\'application durant cette opération.</string>
     <string name="action_risque_deconnexion">Voulez-vous vous déconnecter? Cela supprime toutes les données téléchargées depuis iScreen.</string>
+    <string name="presentation_isales">iSales est une application de prise de commande sur tablette iPad développé par Big Data Consulting. L’application permet à vos commerciaux de terrain de prendre des commandes directement sur tablette et tout cela à partir de chez le client. Elle a été spécialement conçue pour les professionnels. C’est un logiciel unique en son genre</string>
 </resources>

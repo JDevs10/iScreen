@@ -68,6 +68,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
     private ProgressDialog progressDialog;
     private AppDatabase db;
     private List<ProduitEntry> allProducts;
+    private boolean carrouselSetup = false;
 
     final int durationRandom_rv = 10;
     final int durationRandomCat_rv = 15;
@@ -160,8 +161,10 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                Log.e(TAG, "Timer: Start ==> executeFindConfiguration()");
-                executeFindConfiguration();
+                if(carrouselSetup) {
+                    Log.e(TAG, "Timer: Start ==> executeFindConfiguration()");
+                    executeFindConfiguration();
+                }
             }
         }, 0,60000);
     }
@@ -283,7 +286,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
             case 1:
                 if (db.configurationDao().getCurrentConfig().get(0).isShowCarouselTitle()){
                     mainLayoutWidth = 1000;
-                    mainLayoutHeight = 1600;
+                    mainLayoutHeight = 1700;
                     Log.e(TAG, "setResponsible() ==> 1000 ; 1600");
                 }else{
                     mainLayoutWidth = 1000;
@@ -293,33 +296,33 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
                 break;
             case 2:
                 if (db.configurationDao().getCurrentConfig().get(0).isShowCarouselTitle()){
-                    mainLayoutWidth = 650;
-                    mainLayoutHeight = 650;
-                    Log.e(TAG, "setResponsible() ==> 650 ; 650");
+                    mainLayoutWidth = 800;
+                    mainLayoutHeight = 800;
+                    Log.e(TAG, "setResponsible() ==> 800 ; 800");
                 }else {
-                    mainLayoutWidth = 700;
-                    mainLayoutHeight = 900;
-                    Log.e(TAG, "setResponsible() ==> 700 ; 900");
+                    mainLayoutWidth = 850;
+                    mainLayoutHeight = 850;
+                    Log.e(TAG, "setResponsible() ==> 850 ; 850");
                 }
                 break;
             case 3:
                 if (db.configurationDao().getCurrentConfig().get(0).isShowCarouselTitle()) {
                     mainLayoutWidth = 400;
-                    mainLayoutHeight = 400;
+                    mainLayoutHeight = 500;
                     Log.e(TAG, "setResponsible() ==> 400 ; 400");
                 }else{
-                    mainLayoutWidth = 550;
+                    mainLayoutWidth = 400;
                     mainLayoutHeight = 550;
-                    Log.e(TAG, "setResponsible() ==> 550 ; 550");
+                    Log.e(TAG, "setResponsible() ==> 400 ; 550");
                 }
                 break;
             case 4:
                 if (db.configurationDao().getCurrentConfig().get(0).isShowCarouselTitle()) {
                     mainLayoutWidth = 350;
-                    mainLayoutHeight = 350;
-                    Log.e(TAG, "setResponsible() ==> 350 ; 350");
+                    mainLayoutHeight = 360;
+                    Log.e(TAG, "setResponsible() ==> 375 ; 375");
                 }else{
-                    mainLayoutWidth = 425;
+                    mainLayoutWidth = 333;
                     mainLayoutHeight = 425;
                     Log.e(TAG, "setResponsible() ==> 425 ; 425");
                 }
@@ -372,9 +375,12 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
             getRecentProducts(carrousel.getRecentProductList());
         }
         showProgressDialog(false, null, null);
+
+        // Set carrouselSetup, so the auto config update can start
+        carrouselSetup = true;
     }
 
-    private void recycleViewAnimation(List<ProduitEntry> productList, final RecyclerView theRecyclerView, final ProductAdapter adapter, final LinearLayoutManager llm, final Runnable runnable) {
+    private void recycleViewAnimation(List<ProduitEntry> productList, final RecyclerView theRecyclerView, final ProductAdapter adapter, final LinearLayoutManager llm, final Handler handler, final Runnable runnable) {
         if (productList == null || productList.size() != 0) {
             theRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
@@ -383,7 +389,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
 
                 int lastItem = llm.findLastCompletelyVisibleItemPosition();
                 if (lastItem == llm.getItemCount() - 1) {
-                    mHandlerRandom_rv.removeCallbacks(runnable);
+                    handler.removeCallbacks(runnable);
                     Handler postHandler = new Handler();
                     postHandler.postDelayed(new Runnable() {
                         @Override
@@ -391,13 +397,13 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
                             recyclerView.setAdapter(null);
                             recyclerView.setAdapter(adapter);
 
-                            mHandlerRandom_rv.postDelayed(runnable, db.configurationDao().getCurrentConfig().get(0).getCarouselSpeed());
+                            handler.postDelayed(runnable, db.configurationDao().getCurrentConfig().get(0).getCarouselSpeed());
                         }
                     }, 2000);
                 }
                 }
             });
-            mHandlerRandom_rv.postDelayed(runnable, db.configurationDao().getCurrentConfig().get(0).getCarouselSpeed());
+            handler.postDelayed(runnable, db.configurationDao().getCurrentConfig().get(0).getCarouselSpeed());
         }
     }
 
@@ -421,7 +427,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
                 snapHelper.attachToRecyclerView(random_rv);
 
                 if (isCarouselSlide) {
-                    recycleViewAnimation(randomProductList, random_rv, productAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_random_rv);
+                    recycleViewAnimation(randomProductList, random_rv, productAdapter, mLinearLayoutManager, mHandlerRandom_rv, SCROLLING_RUNNABLE_random_rv);
                 }
             }
         }else{
@@ -449,7 +455,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
                 snapHelper.attachToRecyclerView(randomCat_rv);
 
                 if (isCarouselSlide) {
-                    recycleViewAnimation(randomFromSelectedCategoryList, randomCat_rv, productAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_randomCat_rv);
+                    recycleViewAnimation(randomFromSelectedCategoryList, randomCat_rv, productAdapter, mLinearLayoutManager, mHandlerRandomCat_rv, SCROLLING_RUNNABLE_randomCat_rv);
                 }
             }
         }else{
@@ -477,7 +483,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
                 snapHelper.attachToRecyclerView(randomCat_X_rv);
 
                 if (isCarouselSlide) {
-                    recycleViewAnimation(randomFromCategoryXList, randomCat_X_rv, productAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_randomCat_X_rv);
+                    recycleViewAnimation(randomFromCategoryXList, randomCat_X_rv, productAdapter, mLinearLayoutManager, mHandlerRandomCat_X_rv, SCROLLING_RUNNABLE_randomCat_X_rv);
                 }
             }
         }else{
@@ -505,7 +511,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
                 snapHelper.attachToRecyclerView(recentProducts_rv);
 
                 if (isCarouselSlide) {
-                    recycleViewAnimation(recentProductList, recentProducts_rv, recentProductAdapter, mLinearLayoutManager, SCROLLING_RUNNABLE_recentProducts_rv);
+                    recycleViewAnimation(recentProductList, recentProducts_rv, recentProductAdapter, mLinearLayoutManager, mHandlerRecentProducts_rv, SCROLLING_RUNNABLE_recentProducts_rv);
                 }
             }
         }else{
