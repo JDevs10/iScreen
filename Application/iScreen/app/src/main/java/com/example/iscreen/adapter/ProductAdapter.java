@@ -23,6 +23,7 @@ import com.example.iscreen.database.entity.ProduitEntry;
 import com.example.iscreen.interfaces.OnItemClickListener;
 import com.example.iscreen.interfaces.ProduitsAdapterListener;
 import com.example.iscreen.pages.home.DetailProduct;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.List;
@@ -53,12 +54,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
         TextView product_name;
         TextView product_price;
 
+        Picasso picasso;
+
         public RandomAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             mainLayout = itemView.findViewById(R.id.custom_random_catalog_mainLayout);
             product_iv = itemView.findViewById(R.id.custom_random_catalog_item_productimage);
             product_name = itemView.findViewById(R.id.custom_random_catalog_item_productname);
             product_price = itemView.findViewById(R.id.custom_random_catalog_item_productprice);
+
+            //picasso = itemView.findViewById(R.id.custom_random_catalog_item_picasso);
         }
 
         @Override
@@ -104,16 +109,22 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
             File imgFile = new File(randomList.get(i).getFile_content());
             if (imgFile.exists()) {
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
-                viewHolder.product_iv.setImageBitmap(myBitmap);
+                //viewHolder.product_iv.setImageBitmap(myBitmap);
+                Picasso.with(mContext)
+                        .load(imgFile)
+                        .resize(mainLayoutWidth, mainLayoutHeight)
+                        .into(viewHolder.product_iv);
             } else {
-                viewHolder.product_iv.setImageResource(R.drawable.no_image_available);
+                //viewHolder.product_iv.setImageResource(R.drawable.no_image_available);
+                Picasso.with(mContext).load(R.drawable.no_image_available).into(viewHolder.product_iv);
             }
         } else {
-            viewHolder.product_iv.setImageResource(R.drawable.no_image_available);
+            //viewHolder.product_iv.setImageResource(R.drawable.no_image_available);
+            Picasso.with(mContext).load(R.drawable.no_image_available).into(viewHolder.product_iv);
         }
 
         // Set custom product size (responsible)
-        viewHolder.mainLayout.setLayoutParams(new FrameLayout.LayoutParams(mainLayoutWidth, mainLayoutHeight));
+        //viewHolder.mainLayout.setLayoutParams(new FrameLayout.LayoutParams(mainLayoutWidth, mainLayoutHeight));
 
         viewHolder.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override

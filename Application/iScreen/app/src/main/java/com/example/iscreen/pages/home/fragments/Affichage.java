@@ -23,6 +23,8 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,6 +65,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
 
     private ProductAdapter productAdapter = null;
 
+    private LinearLayout randomTitle_ll, randomCatTitle_ll, randomCat_XTitle_ll, recentProductsTitle_ll;
     private TextView randomTitle, randomCatTitle, randomCat_XTitle, recentProductsTitle;
 
     private ProgressDialog progressDialog;
@@ -131,14 +134,17 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
         isCarouselSlide = db.configurationDao().getCurrentConfig().get(0).isCarouselSlide();
         Log.e(TAG, " isCarouselSlide => "+isCarouselSlide);
 
-        Log.e(TAG, "Config size: "+db.configurationDao().getCurrentConfig().size());
-        setResponsible(db.configurationDao().getCurrentConfig().get(0));
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_catalog, container, false);
+
+        randomTitle_ll = (LinearLayout) view.findViewById(R.id.fragment_catalog_randomTitle_1);
+        randomCatTitle_ll = (LinearLayout) view.findViewById(R.id.fragment_catalog_randomCategoryTitle_1);
+        randomCat_XTitle_ll = (LinearLayout) view.findViewById(R.id.fragment_catalog_categoryProductsTitle_1);
+        recentProductsTitle_ll = (LinearLayout) view.findViewById(R.id.fragment_catalog_lastProductTitle_1);
 
         random_rv = view.findViewById(R.id.fragment_catalog_randomRecycler);
         randomCat_rv = view.findViewById(R.id.fragment_catalog_randomCategoryRecycler);
@@ -156,17 +162,25 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        Log.e(TAG, "Config size: "+db.configurationDao().getCurrentConfig().size());
+        setResponsible(db.configurationDao().getCurrentConfig().get(0));
+
         setupCarrouselData();
 
-        new Timer().schedule(new TimerTask() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                if(carrouselSetup) {
-                    Log.e(TAG, "Timer: Start ==> executeFindConfiguration()");
-                    executeFindConfiguration();
-                }
+                new Timer().schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        if(carrouselSetup) {
+                            Log.e(TAG, "Timer: Start ==> executeFindConfiguration()");
+                            executeFindConfiguration();
+                        }
+                    }
+                }, 0,60000);
             }
-        }, 0,60000);
+        });
     }
 
     /**
@@ -276,6 +290,44 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
         if (config.getRandomCategoryX() != null && !config.getRandomCategoryX().equals("-1")){  y = 1;}
         if (config.isRecentProducts()){  z = 1;}
 
+        //Remove margin
+        if(w == 0){
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 0, 0, 0);
+            randomTitle_ll.setLayoutParams(params);
+            Log.e(TAG, "randomTitle_ll: 0 margins");
+        }
+        if(x == 0){
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 0, 0, 0);
+            randomCatTitle_ll.setLayoutParams(params);
+            Log.e(TAG, "randomCatTitle_ll: 0 margins");
+        }
+        if(y == 0){
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 0, 0, 0);
+            randomCat_XTitle_ll.setLayoutParams(params);
+            Log.e(TAG, "randomCat_XTitle_ll: 0 margins");
+        }
+        if(z == 0){
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 0, 0, 0);
+            recentProductsTitle_ll.setLayoutParams(params);
+            Log.e(TAG, "recentProductsTitle_ll: 0 margins");
+        }
+
         int res = w + x + y + z;
         switch (res){
             case 0:
@@ -285,12 +337,12 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
                 break;
             case 1:
                 if (db.configurationDao().getCurrentConfig().get(0).isShowCarouselTitle()){
-                    mainLayoutWidth = 1000;
+                    mainLayoutWidth = 1400;
                     mainLayoutHeight = 1700;
                     Log.e(TAG, "setResponsible() ==> 1000 ; 1600");
                 }else{
-                    mainLayoutWidth = 1000;
-                    mainLayoutHeight = 1800;
+                    mainLayoutWidth = 1350;
+                    mainLayoutHeight = 1920;
                     Log.e(TAG, "setResponsible() ==> 1000 ; 1800");
                 }
                 break;
