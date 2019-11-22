@@ -7,25 +7,33 @@
     android:orientation="vertical"
     android:gravity="center">
 
-    <ImageView
-        android:id="@+id/custom_random_catalog_item_productimage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="15dp"
-        android:layout_weight="1"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginBottom="15dp">
+        <!--android:background="@color/colorPrimaryDark"-->
+        <ImageView
+            android:id="@+id/custom_random_catalog_item_productimage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_margin="15dp">
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp">
         <TextView
             android:id="@+id/custom_random_catalog_item_productname"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="Product Name mmmmmmmmmmmmmmmm"
             android:textColor="@android:color/black"
-            android:textSize="30dp"
+            android:textSize="150dp"
             android:textStyle="bold"
             android:layout_weight="1"/>
         <TextView
@@ -34,7 +42,7 @@
             android:layout_height="match_parent"
             android:text="$19.9"
             android:textColor="@android:color/holo_red_dark"
-            android:textSize="30dp"
+            android:textSize="150dp"
             android:textStyle="bold"
             android:gravity="center"
             android:layout_weight="1"/>

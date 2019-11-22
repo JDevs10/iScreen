@@ -298,6 +298,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
             );
             params.setMargins(0, 0, 0, 0);
             randomTitle_ll.setLayoutParams(params);
+            randomTitle_ll.setVisibility(View.GONE);
             Log.e(TAG, "randomTitle_ll: 0 margins");
         }
         if(x == 0){
@@ -307,6 +308,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
             );
             params.setMargins(0, 0, 0, 0);
             randomCatTitle_ll.setLayoutParams(params);
+            randomCatTitle_ll.setVisibility(View.GONE);
             Log.e(TAG, "randomCatTitle_ll: 0 margins");
         }
         if(y == 0){
@@ -316,7 +318,15 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
             );
             params.setMargins(0, 0, 0, 0);
             randomCat_XTitle_ll.setLayoutParams(params);
+            randomCat_XTitle_ll.setVisibility(View.GONE);
             Log.e(TAG, "randomCat_XTitle_ll: 0 margins");
+        }else{ // if y == 1 then set all margins to zero
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(0, 0, 0, 0);
+            randomCat_XTitle_ll.setLayoutParams(params);
         }
         if(z == 0){
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -325,6 +335,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
             );
             params.setMargins(0, 0, 0, 0);
             recentProductsTitle_ll.setLayoutParams(params);
+            recentProductsTitle_ll.setVisibility(View.GONE);
             Log.e(TAG, "recentProductsTitle_ll: 0 margins");
         }
 
@@ -338,11 +349,11 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
             case 1:
                 if (db.configurationDao().getCurrentConfig().get(0).isShowCarouselTitle()){
                     mainLayoutWidth = 1400;
-                    mainLayoutHeight = 1700;
+                    mainLayoutHeight = 1600;
                     Log.e(TAG, "setResponsible() ==> 1000 ; 1600");
                 }else{
                     mainLayoutWidth = 1350;
-                    mainLayoutHeight = 1920;
+                    mainLayoutHeight = 1700;
                     Log.e(TAG, "setResponsible() ==> 1000 ; 1800");
                 }
                 break;

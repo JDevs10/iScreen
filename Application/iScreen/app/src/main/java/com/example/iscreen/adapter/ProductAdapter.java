@@ -113,6 +113,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
                 Picasso.with(mContext)
                         .load(imgFile)
                         .resize(mainLayoutWidth, mainLayoutHeight)
+                        //.centerCrop()
+                        //.fit()
+                        //.onlyScaleDown()
+                        //.rotate(90)
                         .into(viewHolder.product_iv);
             } else {
                 //viewHolder.product_iv.setImageResource(R.drawable.no_image_available);
