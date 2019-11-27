@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -110,25 +111,22 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.RandomAd
             if (imgFile.exists()) {
                 Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                 //viewHolder.product_iv.setImageBitmap(myBitmap);
+                //viewHolder.product_iv.setLayoutParams(new LinearLayout.LayoutParams(mainLayoutWidth,mainLayoutHeight));
+
                 Picasso.with(mContext)
                         .load(imgFile)
                         .resize(mainLayoutWidth, mainLayoutHeight)
-                        //.centerCrop()
-                        //.fit()
-                        //.onlyScaleDown()
-                        //.rotate(90)
+                        .centerCrop()
                         .into(viewHolder.product_iv);
             } else {
                 //viewHolder.product_iv.setImageResource(R.drawable.no_image_available);
-                Picasso.with(mContext).load(R.drawable.no_image_available).into(viewHolder.product_iv);
+                //Picasso.with(mContext).load(R.drawable.no_image_available).into(viewHolder.product_iv);
+                Picasso.with(mContext).load(R.drawable.no_image_available).resize(mainLayoutWidth, mainLayoutHeight).centerCrop().into(viewHolder.product_iv);
             }
         } else {
             //viewHolder.product_iv.setImageResource(R.drawable.no_image_available);
-            Picasso.with(mContext).load(R.drawable.no_image_available).into(viewHolder.product_iv);
+            Picasso.with(mContext).load(R.drawable.no_image_available).resize(mainLayoutWidth, mainLayoutHeight).centerCrop().into(viewHolder.product_iv);
         }
-
-        // Set custom product size (responsible)
-        //viewHolder.mainLayout.setLayoutParams(new FrameLayout.LayoutParams(mainLayoutWidth, mainLayoutHeight));
 
         viewHolder.mainLayout.setOnClickListener(new View.OnClickListener() {
             @Override

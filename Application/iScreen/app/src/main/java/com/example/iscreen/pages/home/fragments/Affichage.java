@@ -119,6 +119,21 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
         }
     };
 
+    public Handler mHandlerSynchConfig = null;
+    public Runnable mRunnableSynchConfig = new Runnable() {
+        @Override
+        public void run() {
+            if(carrouselSetup) {
+                Log.e(TAG, "Timer: Start ==> executeFindConfiguration()");
+                executeFindConfiguration();
+            }
+        }
+    };
+
+    public Affichage(){
+
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -167,20 +182,10 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
 
         setupCarrouselData();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        if(carrouselSetup) {
-                            Log.e(TAG, "Timer: Start ==> executeFindConfiguration()");
-                            executeFindConfiguration();
-                        }
-                    }
-                }, 0,60000);
-            }
-        });
+        mHandlerSynchConfig = new Handler();
+        mHandlerSynchConfig.postDelayed(mRunnableSynchConfig, 60000);
+
+
     }
 
     /**
@@ -190,7 +195,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
 
         //Si le téléphone n'est pas connecté
         if (!ConnectionManager.isPhoneConnected(mContext)) {
-            Toast.makeText(mContext, getString(R.string.erreur_connexion), Toast.LENGTH_LONG).show();
+            //Toast.makeText(mContext, getString(R.string.erreur_connexion), Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -208,7 +213,7 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
         if (findConfigurationREST == null) {
             //Fermeture du loader
             //showProgressDialog(false, null, null);
-            Toast.makeText(mContext, getString(R.string.service_indisponible), Toast.LENGTH_LONG).show();
+            //Toast.makeText(mContext, getString(R.string.service_indisponible), Toast.LENGTH_LONG).show();
             return;
         }
 
@@ -352,8 +357,8 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
                     mainLayoutHeight = 1600;
                     Log.e(TAG, "setResponsible() ==> 1000 ; 1600");
                 }else{
-                    mainLayoutWidth = 1350;
-                    mainLayoutHeight = 1700;
+                    mainLayoutWidth = 1000;
+                    mainLayoutHeight = 1500;
                     Log.e(TAG, "setResponsible() ==> 1000 ; 1800");
                 }
                 break;
@@ -589,5 +594,29 @@ public class Affichage extends Fragment implements LoadCarousels, ProduitsAdapte
         Intent intent = new Intent(getContext(), DetailProduct.class);
         intent.putExtra("ref_produit", product.getRef());
         startActivity(intent);
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if(mHandlerSynchConfig != null){
+            mHandlerSynchConfig.removeCallbacksAndMessages(mRunnableSynchConfig);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(mHandlerSynchConfig != null){
+            mHandlerSynchConfig.removeCallbacksAndMessages(mRunnableSynchConfig);
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(mHandlerSynchConfig != null){
+            mHandlerSynchConfig.removeCallbacksAndMessages(mRunnableSynchConfig);
+        }
     }
 }

@@ -73,6 +73,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private int mCountRequestImg = 0;
     private int mCountRequestImgTotal = 0;
 
+    private Affichage mAffichage = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -110,7 +112,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             //default fragment when activity is running
             getSupportActionBar().setTitle("Affichage");
             navigationView.setCheckedItem(R.id.nav_affichage);
-            getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_container, new Affichage()).commit();
+            mAffichage = new Affichage();
+            getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_container, mAffichage).commit();
         }
     }
 
@@ -124,7 +127,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
                 toolbar.setTitle("Affichage");
                 navigationView.setCheckedItem(R.id.nav_affichage);
-                getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_container, new Affichage()).commit();
+                mAffichage = new Affichage();
+                getSupportFragmentManager().beginTransaction().replace(R.id.home_fragment_container, mAffichage).commit();
                 break;
 
             case R.id.nav_settings:
@@ -148,6 +152,13 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                                 if (!ConnectionManager.isPhoneConnected(getApplicationContext())) {
                                     Toast.makeText(getApplicationContext(), getString(R.string.erreur_connexion), Toast.LENGTH_LONG).show();
                                     return;
+                                }
+
+                                if(mAffichage != null) {
+                                    if (mAffichage.mHandlerSynchConfig != null) {
+                                        mAffichage.mHandlerSynchConfig.removeCallbacksAndMessages(null);
+                                        //Toast.makeText(getApplicationContext(), "Stopped Synch Runnable !!!", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
 
                                 // Delete all the products and images
